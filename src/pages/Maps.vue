@@ -36,7 +36,7 @@
           <select
             v-model="dong"
             class="col custom-select"
-            @change="sendKeyword"
+            @change="sendKeyword()"
           >
             <option value="" disabled selected hidden>선택</option>
             <option
@@ -71,6 +71,9 @@ export default {
       dongs: [],
       dongCode: ""
     };
+  },
+  computed: {
+    ...mapActions(["apts"])
   },
   mounted() {
     var myLatlng = new window.google.maps.LatLng(37.5665734, 126.978179);
@@ -175,9 +178,9 @@ export default {
     sendKeyword() {
       // this.$emit('send-keyword', this.dongCode);
       this.dongCode = this.gugun;
-      console.log(this.dongCode);
-      this.getAptList(this.dongCode);
-      //this.$store.dispatch("getAptList", this.dongCode);
+      console.log("아파트 정보 얻기");
+      // this.getAptList(this.dongCode);
+      this.$store.dispatch("getAptList", this.dongCode);
       this.dongCode = "";
     },
     addMarker(tmpLat, tmpLng, aptName) {

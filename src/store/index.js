@@ -1,27 +1,25 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import axios from 'axios';
+import axios from "axios";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     apts: [],
-    apt: Object,
+    apt: Object
+  },
+  getters: {
+    apts(state) {
+      return state.apts;
+    }
   },
   mutations: {
-
-    GET_APT_LIST(state, apts) {
-      // console.log(state, apts);
-      state.apts = apts;
-    },
-    SELECT_APT(state, apt) {
-      state.apt = apt;
-    },
+    setApts(state, payload) {
+      state.apt = payload;
+    }
   },
   actions: {
-
-
     getAptList({ commit }, dongCode) {
       // vue cli enviroment variables 검색
       //.env.local file 생성.
@@ -29,34 +27,34 @@ export default new Vuex.Store({
       //const SERVICE_KEY = process.env.VUE_APP_APT_DEAL_API_KEY;
       console.log("call");
       const SERVICE_KEY =
-         '9Xo0vlglWcOBGUDxH8PPbuKnlBwbWU6aO7%2Bk3FV4baF9GXok1yxIEF%2BIwr2%2B%2F%2F4oVLT8bekKU%2Bk9ztkJO0wsBw%3D%3D';
+        "9Xo0vlglWcOBGUDxH8PPbuKnlBwbWU6aO7%2Bk3FV4baF9GXok1yxIEF%2BIwr2%2B%2F%2F4oVLT8bekKU%2Bk9ztkJO0wsBw%3D%3D";
 
       const SERVICE_URL =
-        'http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev';
+        "http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev";
 
       const params = {
         LAWD_CD: dongCode,
-        DEAL_YMD: '202010',
-        serviceKey: decodeURIComponent(SERVICE_KEY),
+        DEAL_YMD: "202010",
+        serviceKey: decodeURIComponent(SERVICE_KEY)
       };
 
       // npm install --save axios
       axios
         .get(SERVICE_URL, {
-          params,
+          params
         })
-        .then((response) => {
+        .then(response => {
           console.log(response.data.response.body.items.item);
-          commit('GET_APT_LIST', response.data.response.body.items.item);
+          commit("GET_APT_LIST", response.data.response.body.items.item);
         })
-        .catch((error) => {
+        .catch(error => {
           console.dir(error);
         });
     },
     selectApt({ commit }, apt) {
-      commit('SELECT_APT', apt);
-    },
+      commit("SELECT_APT", apt);
+    }
   },
-  modules: {},
+  modules: {}
   // plugins: [createPersistedState()],
 });
