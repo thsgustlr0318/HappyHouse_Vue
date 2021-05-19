@@ -7,6 +7,31 @@
       </div>
     </div>
 
+    <div class="row">
+      <div
+        class="col-md-6 col-xl-3"
+        v-for="(apt, index) in apts"
+        :key="index"
+        :apt="apt"
+      >
+        <stats-card>
+          <div
+            class="icon-big text-center"
+            :class="`icon-${type[Math.floor(Math.random() * 4)]}`"
+            slot="header"
+          >
+            <i class="ti-home"></i>
+          </div>
+          <div class="numbers" slot="content">
+            <p>{{ apt.아파트 }}</p>
+            {{ apt.거래금액 }} 만원
+          </div>
+          <div class="stats" slot="footer">
+            > 자세히 보기
+          </div>
+        </stats-card>
+      </div>
+    </div>
     <!-- Apart -->
     <div class="row">
       <div
@@ -20,7 +45,7 @@
             :class="`icon-${stats.type}`"
             slot="header"
           >
-            <i :class="stats.icon"></i>
+            <i class="ti-home"></i>
           </div>
           <div class="numbers" slot="content">
             <p>{{ stats.title }}</p>
@@ -90,6 +115,7 @@
   </div>
 </template>
 <script>
+import { mapState } from "vuex";
 import { StatsCard, ChartCard } from "@/components/index";
 import Chartist from "chartist";
 import Maps from "@/pages/Maps.vue";
@@ -100,11 +126,15 @@ export default {
     ChartCard,
     Maps
   },
+  computed: {
+    ...mapState(["apts"])
+  },
   /**
    * Chart data used to render stats, charts. Should be replaced with server data
    */
   data() {
     return {
+      type: ["warning", "success", "danger", "info"],
       statsCards: [
         {
           type: "warning",
