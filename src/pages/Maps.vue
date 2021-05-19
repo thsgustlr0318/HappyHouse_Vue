@@ -56,7 +56,7 @@
 </template>
 <script>
 //import { mapGetters } from "vuex";
-import { mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import http from "@/util/http-common";
 
 export default {
@@ -73,77 +73,15 @@ export default {
     };
   },
   computed: {
-    ...mapActions(["apts"])
+    ...mapGetters(["apts"])
   },
   mounted() {
-    var myLatlng = new window.google.maps.LatLng(37.5665734, 126.978179);
-    var mapOptions = {
-      zoom: 13,
-      center: myLatlng,
-      scrollwheel: true, // we disable de scroll over the map, it is a really annoing when you scroll through page
-      styles: [
-        {
-          featureType: "water",
-          stylers: [{ saturation: 43 }, { lightness: -11 }, { hue: "#0088ff" }]
-        },
-        {
-          featureType: "road",
-          elementType: "geometry.fill",
-          stylers: [{ hue: "#ff0000" }, { saturation: -100 }, { lightness: 99 }]
-        },
-        {
-          featureType: "road",
-          elementType: "geometry.stroke",
-          stylers: [{ color: "#808080" }, { lightness: 54 }]
-        },
-        {
-          featureType: "landscape.man_made",
-          elementType: "geometry.fill",
-          stylers: [{ color: "#ece2d9" }]
-        },
-        {
-          featureType: "poi.park",
-          elementType: "geometry.fill",
-          stylers: [{ color: "#ccdca1" }]
-        },
-        {
-          featureType: "road",
-          elementType: "labels.text.fill",
-          stylers: [{ color: "#767676" }]
-        },
-        {
-          featureType: "road",
-          elementType: "labels.text.stroke",
-          stylers: [{ color: "#ffffff" }]
-        },
-        { featureType: "poi", stylers: [{ visibility: "off" }] },
-        {
-          featureType: "landscape.natural",
-          elementType: "geometry.fill",
-          stylers: [{ visibility: "on" }, { color: "#b8cb93" }]
-        },
-        { featureType: "poi.park", stylers: [{ visibility: "on" }] },
-        {
-          featureType: "poi.sports_complex",
-          stylers: [{ visibility: "on" }]
-        },
-        { featureType: "poi.medical", stylers: [{ visibility: "on" }] },
-        {
-          featureType: "poi.business",
-          stylers: [{ visibility: "simplified" }]
-        }
-      ]
-    };
-    var map = new window.google.maps.Map(
-      document.getElementById("map"),
-      mapOptions
-    );
-    var marker = new window.google.maps.Marker({
-      position: myLatlng,
-      title: "Hello World!"
-    });
-    // To add the marker to the map, call setMap();
-    marker.setMap(map);
+    const script = document.createElement("script");
+    /* global kakao */
+    script.onload = () => kakao.maps.load(this.initMap);
+    script.src =
+      "http://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=751304f0381dd2bffd6225a9c8aeb105&libraries=services";
+    document.head.appendChild(script);
   },
   created() {
     http.get("/map/sido", {}).then(({ data }) => {
@@ -179,127 +117,66 @@ export default {
       // this.$emit('send-keyword', this.dongCode);
       this.dongCode = this.gugun;
       console.log("아파트 정보 얻기");
-      // this.getAptList(this.dongCode);
-      this.$store.dispatch("getAptList", this.dongCode);
+      this.getAptList(this.dongCode);
+      //this.$store.dispatch("getAptList", this.dongCode);
       this.dongCode = "";
+      let geoList = this.apts;
+      var geocoder = new kakao.maps.services.Geocoder();
+      for (let key in geoList) {
+        console.log(geoList[key].도로명);
+      }
+
+      // 주소로 좌표를 검색합니다
+      var test =
+        this.sido + " " + this.gugun + " " + this.dong + " 황물로15길 25";
+      geocoder.addressSearch(test, function(result, status) {
+        // 정상적으로 검색이 완료됐으면
+        if (status === kakao.maps.services.Status.OK) {
+          var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+          // 결과값으로 받은 위치를 마커로 표시합니다
+          var marker = new kakao.maps.Marker({
+            map: map,
+            position: coords
+          });
+
+          // 인포윈도우로 장소에 대한 설명을 표시합니다
+          var infowindow = new kakao.maps.InfoWindow({
+            content:
+              '<div style="width:150px;text-align:center;padding:6px 0;">우리회사</div>'
+          });
+          infowindow.open(map, marker);
+
+          // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+          map.setCenter(coords);
+        } else {
+          console.log("주소를 불러오지 못했습니다.");
+        }
+      });
     },
-    addMarker(tmpLat, tmpLng, aptName) {
-      var marker = new google.maps.Marker({
-        position: new google.maps.LatLng(
-          parseFloat(tmpLat),
-          parseFloat(tmpLng)
-        ),
-        label: aptName,
-        title: aptName
+    initMap() {
+      var mapContainer = document.getElementById("map"), // 지도를 표시할 div
+        mapOption = {
+          center: new kakao.maps.LatLng(37.50146850010687, 127.03965969793167), // 지도의 중심좌표
+          level: 7 // 지도의 확대 레벨
+        };
+
+      var map = new kakao.maps.Map(mapContainer, mapOption);
+
+      // 마커가 표시될 위치입니다
+      var markerPosition = new kakao.maps.LatLng(
+        37.50146850010687,
+        127.03965969793167
+      );
+
+      // 마커를 생성합니다
+      var marker = new kakao.maps.Marker({
+        position: markerPosition
       });
-      marker.addListener("click", function() {
-        map.setZoom(17);
-        map.setCenter(marker.getPosition());
-        callHouseDealInfo(aptName);
-      });
+
+      // 마커가 지도 위에 표시되도록 설정합니다
       marker.setMap(map);
-    },
-    geocode(jsonData) {
-      let idx = 0;
-      $.each(jsonData, function(index, vo) {
-        let tmpLat;
-        let tmpLng;
-        $.get(
-          "https://maps.googleapis.com/maps/api/geocode/json",
-          {
-            key: "AIzaSyBbAXw9l2nVgs3r-QfbDebWelD8-ySXIqA",
-            address: vo.dong + "+" + vo.aptName + "+" + vo.jibun
-          },
-          function(data, status) {
-            tmpLat = data.results[0].geometry.location.lat;
-            tmpLng = data.results[0].geometry.location.lng;
-            $("#lat_" + index).text(tmpLat);
-            $("#lng_" + index).text(tmpLng);
-            addMarker(tmpLat, tmpLng, vo.aptName);
-          },
-          "json"
-        ); //get
-      }); //each
     }
-
-    // $(document).ready(function(){
-    //   $.get("/map/sido"
-    //     ,function(data, status){
-    //       $.each(data, function(index, vo) {
-    //         $("#sido").append("<option value='"+vo.sidoCode+"'>"+vo.sidoName+"</option>");
-    //       });//each
-    //     }//function
-    //     , "json"
-    //   );//get
-    // });//ready
-    // $(document).ready(function(){
-    //   $("#sido").change(function() {
-    //     $.get("/map/gugun"
-    //         ,{sido:$("#sido").val()}
-    //         ,function(data, status){
-    //           $("#gugun").empty();
-    //           $("#gugun").append('<option value="0">선택</option>');
-    //           $.each(data, function(index, vo) {
-    //             $("#gugun").append("<option value='"+vo.gugunCode+"'>"+vo.gugunName+"</option>");
-    //           });//each
-    //         }//function
-    //         , "json"
-    //     );//get
-    //   });//change
-    //   $("#gugun").change(function() {
-    //     $.get("/map/dong"
-    //         ,{gugun:$("#gugun").val()}
-    //         ,function(data, status){
-    //           $("#dong").empty();
-    //           $("#dong").append('<option value="0">선택</option>');
-    //           $.each(data, function(index, vo) {
-    //             $("#dong").append("<option value='"+vo.dong+"'>"+vo.dong+"</option>");
-    //           });//each
-    //         }//function
-    //         , "json"
-    //     );//get
-    //   });//change
-    //   $("#dong").change(function() {
-    //     $.get("/map/apt"
-    //         ,{dong:$("#dong").val()}
-    //         ,function(data, status){
-    //           $("#searchResult").empty();
-    //           $("#showHouse").empty();
-    //           $.each(data, function(index, vo) {
-    // 	let str =  '<div class="col-md-12 col-xl-4">'
-    // 	+ '<div class="card card-social">'
-    // 	+ '<div class="card-block border-bottom">'
-    // 	+ '<div class="row align-items-center justify-content-center">'
-    // 	+ '<div class="col text-left">'
-    // 	+ '<h5>'+vo.aptName+'</h5></div>'
-    // 	+ '<div class="col text-right">'
-    // 	+ '<h5>'+vo.dong+'</h5>'
-    // 	+ '<h5 class="text-c-green mb-0">'
-    // 	+ '<span class="text-muted">'+vo.jibun+'</span>'
-    // 	+ ' 번지</h5></div></div></div>'
-    //             + '<div class="card-block">'
-    // 	+ '<div class="row align-items-center justify-content-center card-active">'
-    // 	+ '<div class="col-6">'
-    // 	+ '<h6 class="text-center m-b-10">'
-    // 	+ ' <span class="text-muted m-r-5">면적:</span>'+vo.area+' m2</h6>'
-    // 	+ '<div class="progress"><div class="progress-bar progress-c-theme" role="progressbar" style="width: 60%; height: 6px;" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>'
-    // 	+ '</div>'
-    // 	+ '</div><div class="col-6"><h6 class="text-center  m-b-10">'
-    // 	+ '<span class="text-muted m-r-5">금액:</span>'+vo.dealAmount + ' 만원'
-    // 	+ '</h6><div class="progress">'
-    // 	+ '<div class="progress-bar progress-c-theme2" role="progressbar" style="width: 45%; height: 6px;" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>'
-    // 	+ '</div></div></div></div></div></div>'
-
-    //             $("#showHouse").append(str);
-    // 	$("#searchResult").append(vo.dong+" "+vo.aptName+" "+vo.jibun+"<br>");
-    //           });//each
-    //           geocode(data);
-    //         }//function
-    //         , "json"
-    //     );//get
-    //   });//change
-
-    // });//ready
   }
 };
 </script>

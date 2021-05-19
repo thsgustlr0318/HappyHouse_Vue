@@ -7,7 +7,8 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     apts: [],
-    apt: Object
+    apt: Object,
+    address: Object
   },
   getters: {
     apts(state) {
@@ -19,12 +20,13 @@ export default new Vuex.Store({
       // console.log(state, apts);
       state.apts = apts;
     },
-    setApts(state, payload) {
+    SELECT_APT(state, payload) {
       state.apt = payload;
     }
   },
   actions: {
     getAptList({ commit }, dongCode) {
+      commit("GET_APT_LIST", []);
       // vue cli enviroment variables 검색
       //.env.local file 생성.
       // 반드시 VUE_APP으로 시작해야 한다.
@@ -48,7 +50,6 @@ export default new Vuex.Store({
           params
         })
         .then(response => {
-          console.log(response.data.response.body.items.item);
           commit("GET_APT_LIST", response.data.response.body.items.item);
         })
         .catch(error => {
