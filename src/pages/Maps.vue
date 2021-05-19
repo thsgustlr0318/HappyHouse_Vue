@@ -21,7 +21,7 @@
           <select
             v-model="gugun"
             class="col mr-1 custom-select"
-            @change="getGugun()"
+            @change="getDong()"
           >
             <option value="" disabled selected hidden>선택</option>
             <option
@@ -33,8 +33,18 @@
           </select>
         </div>
         <div class="col-md-3">
-          <select v-model="dong" class="col custom-select">
-            <option value="">선택</option>
+          <select
+            v-model="dong"
+            class="col custom-select"
+            @change="sendKeyword"
+          >
+            <option value="" disabled selected hidden>선택</option>
+            <option
+              v-for="dongOption in dongs"
+              v-bind:key="dongOption.dong"
+              v-bind:value="dongOption.dong"
+              >{{ dongOption.dong }}</option
+            >
           </select>
         </div>
       </div>
@@ -45,7 +55,8 @@
   </card>
 </template>
 <script>
-import { mapGetters } from "vuex";
+//import { mapGetters } from "vuex";
+import { mapActions } from "vuex";
 import http from "@/util/http-common";
 
 export default {
@@ -57,7 +68,8 @@ export default {
       dong: "",
       sidos: [],
       guguns: [],
-      dongs: []
+      dongs: [],
+      dongCode: ""
     };
   },
   mounted() {
@@ -139,6 +151,7 @@ export default {
     });
   },
   methods: {
+    ...mapActions(["getAptList"]),
     getGugun() {
       console.log("gugun 받아오기");
       console.log(this.sido);
@@ -148,6 +161,24 @@ export default {
           this.guguns = data;
           console.log(this.guguns);
         });
+    },
+    getDong() {
+      console.log("dong 받아오기");
+      console.log(this.gugun);
+      http
+        .get("/map/dong", { params: { gugun: this.gugun } })
+        .then(({ data }) => {
+          this.dongs = data;
+          console.log(this.dongs);
+        });
+    },
+    sendKeyword() {
+      // this.$emit('send-keyword', this.dongCode);
+      this.dongCode = this.gugun;
+      console.log(this.dongCode);
+      this.getAptList(this.dongCode);
+      //this.$store.dispatch("getAptList", this.dongCode);
+      this.dongCode = "";
     },
     addMarker(tmpLat, tmpLng, aptName) {
       var marker = new google.maps.Marker({

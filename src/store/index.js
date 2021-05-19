@@ -1,78 +1,62 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import http from "@/util/http-common";
+import axios from 'axios';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    qnas: [],
-    qna: {},
-    anss: [],
-    ans: {}
-  },
-  getters: {
-    qnas(state) {
-      return state.qnas;
-    },
-    qna(state) {
-      return state.qna;
-    },
-    anss(state) {
-      return state.anss;
-    },
-    ans(state) {
-      return state.ans;
-    }
+    apts: [],
+    apt: Object,
   },
   mutations: {
-    setQnas(state, payload) {
-      state.qnas = payload;
+
+    GET_APT_LIST(state, apts) {
+      // console.log(state, apts);
+      state.apts = apts;
     },
-    setQna(state, payload) {
-      state.qna = payload;
+    SELECT_APT(state, apt) {
+      state.apt = apt;
     },
-    setAnss(state, payload) {
-      state.anss = payload;
-    },
-    setAns(state, payload) {
-      state.ans = payload;
-    }
   },
   actions: {
-    getQnas(context) {
-      http
-        .get("qna/all")
-        .then(({ data }) => {
-          context.commit("setQnas", data);
-          console.log("qnas가져오기");
-          console.log(data);
+
+
+    getAptList({ commit }, dongCode) {
+      // vue cli enviroment variables 검색
+      //.env.local file 생성.
+      // 반드시 VUE_APP으로 시작해야 한다.
+      //const SERVICE_KEY = process.env.VUE_APP_APT_DEAL_API_KEY;
+      console.log("call");
+      const SERVICE_KEY =
+         '9Xo0vlglWcOBGUDxH8PPbuKnlBwbWU6aO7%2Bk3FV4baF9GXok1yxIEF%2BIwr2%2B%2F%2F4oVLT8bekKU%2Bk9ztkJO0wsBw%3D%3D';
+
+      const SERVICE_URL =
+        'http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev';
+
+      const params = {
+        LAWD_CD: dongCode,
+        DEAL_YMD: '202010',
+        serviceKey: decodeURIComponent(SERVICE_KEY),
+      };
+
+      // npm install --save axios
+      axios
+        .get(SERVICE_URL, {
+          params,
         })
-        .catch(() => {
-          alert("에러발생!");
+        .then((response) => {
+          console.log(response.data.response.body.items.item);
+          commit('GET_APT_LIST', response.data.response.body.items.item);
+        })
+        .catch((error) => {
+          console.dir(error);
         });
     },
-    getQna(context, payload) {
-      http.get("qna/" + payload).then(({ data }) => {
-        console.log("getQna");
-        context.commit("setQna", data);
-      });
+    selectApt({ commit }, apt) {
+      commit('SELECT_APT', apt);
     },
-    getAnss(context) {
-      http
-        .get("")
-        .then(({ data }) => {
-          context.commit("setAnss", data);
-        })
-        .catch(() => {
-          alert("에러발생!");
-        });
-    },
-    getAns(context, payload) {
-      http.get("qna/answer" + payload).then(({ data }) => {
-        context.commit("setAns", data);
-        console.log(data);
-      });
-    }
-  }
+  },
+  modules: {},
+  // plugins: [createPersistedState()],
 });

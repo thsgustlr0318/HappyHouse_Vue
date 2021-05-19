@@ -1,6 +1,13 @@
 <template>
   <div>
-    <!--Stats cards-->
+    <!-- map -->
+    <div class="row">
+      <div class="col-12">
+        <maps name=""></maps>
+      </div>
+    </div>
+
+    <!-- Apart -->
     <div class="row">
       <div
         class="col-md-6 col-xl-3"
@@ -25,14 +32,6 @@
         </stats-card>
       </div>
     </div>
-
-    <!-- map -->
-    <div class="row">
-      <div class="col-12">
-        <maps name=""></maps>
-      </div>
-    </div>
-
     <!--Charts-->
     <div class="row">
       <div class="col-12">
@@ -109,7 +108,7 @@ export default {
       statsCards: [
         {
           type: "warning",
-          icon: "ti-server",
+          icon: "ti-home",
           title: "Capacity",
           value: "105GB",
           footerText: "Updated now",
@@ -117,7 +116,7 @@ export default {
         },
         {
           type: "success",
-          icon: "ti-wallet",
+          icon: "ti-home",
           title: "Revenue",
           value: "$1,345",
           footerText: "Last day",
@@ -125,7 +124,7 @@ export default {
         },
         {
           type: "danger",
-          icon: "ti-pulse",
+          icon: "ti-home",
           title: "Errors",
           value: "23",
           footerText: "In the last hour",
@@ -133,7 +132,7 @@ export default {
         },
         {
           type: "info",
-          icon: "ti-twitter-alt",
+          icon: "ti-home",
           title: "Followers",
           value: "+45",
           footerText: "Updated now",
