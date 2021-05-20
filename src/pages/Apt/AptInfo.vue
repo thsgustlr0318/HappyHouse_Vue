@@ -2,21 +2,21 @@
   <div class="container">
     <div class="row">
       <div class="col-md-6">
-        <card title="table1.title" subTitle="table1.subTitle">
+        <card :title="apt.아파트" :subTitle="apt.법정동">
           <div slot="raw-content" class="table-responsive">
             <table class="table table-striped">
               <thead>
-                <th>키</th>
+                <th>항목</th>
                 <th>값</th>
               </thead>
               <tbody>
                 <tr v-for="(item, index) in apt" :key="index">
                   <slot :row="item">
                     <td>
-                      {{ item }}
+                      {{ index }}
                     </td>
                     <td>
-                      {{ index }}
+                      {{ item }}
                     </td>
                   </slot>
                 </tr>
