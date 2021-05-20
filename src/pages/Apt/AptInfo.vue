@@ -1,31 +1,66 @@
 <template>
   <div class="container">
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-sm-4">
         <card :title="apt.아파트" :subTitle="apt.법정동">
+          </br>
           <div slot="raw-content" class="table-responsive">
             <table class="table table-striped">
-              <thead>
-                <th>항목</th>
-                <th>값</th>
-              </thead>
               <tbody>
-                <tr v-for="(item, index) in apt" :key="index">
-                  <slot :row="item">
+                <tr>
                     <td>
-                      {{ index }}
+                      위치
                     </td>
                     <td>
-                      {{ item }}
+                      {{ apt.법정동 }} 
                     </td>
-                  </slot>
+                </tr>
+                <tr>
+                    <td>
+                      건축년도
+                    </td>
+                    <td>
+                      {{ apt.건축년도 }} 년
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                      거래금액
+                    </td>
+                    <td>
+                      {{ apt.거래금액 }} 만원
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                      거래일자
+                    </td>
+                    <td>
+                      {{ apt.년 }}-{{ apt.월 }}-{{ apt.일 }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                      면적
+                    </td>
+                    <td>
+                      {{ apt.전용면적 }} m2
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                      층
+                    </td>
+                    <td>
+                      {{ apt.층 }} 층
+                    </td>
                 </tr>
               </tbody>
             </table>
           </div>
         </card>
       </div>
-      <div class="col-md-6">
+      <div class="col-sm-8">
         <card class="card-map" title="주변 정보">
           <div class="map">
             <div id="map"></div>
@@ -70,7 +105,10 @@ export default {
   data() {
     return {
       markers: [],
-      map: ""
+      map: "",
+      ps: "",
+      currCategory: "",
+      placeOverlay: ""
     };
   },
   components: {
@@ -80,13 +118,16 @@ export default {
     ...mapState(["apt"])
   },
   mounted() {
-    /*
-    const script = document.createElement("script");
-    script.onload = () => kakao.maps.load(this.initMap);
-    script.src =
-      "http://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=751304f0381dd2bffd6225a9c8aeb105&libraries=services";
-    document.head.appendChild(script);
-    */
+    if (window.kakao && window.kakao.maps) {
+      this.initMap();
+    } else {
+      const script = document.createElement("script");
+      /* global kakao */
+      script.onload = () => kakao.maps.load(this.initMap);
+      script.src =
+        "http://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=751304f0381dd2bffd6225a9c8aeb105&libraries=services";
+      document.head.appendChild(script);
+    }
   },
   filters: {
     price(value) {
@@ -97,7 +138,7 @@ export default {
   methods: {
     // 카테고리 검색을 요청하는 함수입니다
     searchPlaces() {
-      if (!currCategory) {
+      if (!this.currCategory) {
         return;
       }
 
@@ -105,45 +146,87 @@ export default {
       placeOverlay.setMap(null);
 
       // 지도에 표시되고 있는 마커를 제거합니다
-      removeMarker();
+      this.removeMarker();
 
       ps.categorySearch(currCategory, placesSearchCB, { useMapBounds: true });
     },
+
     initMap() {
       // 마커를 클릭했을 때 해당 장소의 상세정보를 보여줄 커스텀오버레이입니다
-      var placeOverlay = new kakao.maps.CustomOverlay({ zIndex: 1 });
+      this.placeOverlay = new kakao.maps.CustomOverlay({ zIndex: 1 });
       var contentNode = document.createElement("div"); // 커스텀 오버레이의 컨텐츠 엘리먼트 입니다
       this.markers = []; // 마커를 담을 배열입니다
-      var currCategory = ""; // 현재 선택된 카테고리를 가지고 있을 변수입니다
+      this.currCategory = ""; // 현재 선택된 카테고리를 가지고 있을 변수입니다
 
-      var mapContainer = document.getElementById("map"), // 지도를 표시할 div
-        mapOption = {
-          center: new kakao.maps.LatLng(37.566826, 126.9786567), // 지도의 중심좌표
-          level: 5 // 지도의 확대 레벨
-        };
+      let address = this.apt.도로명 + " " + this.apt.도로명건물본번호코드 + "";
+      //test = test.replaceAll("\(.*\)|\s-\s.*", "");
+      console.log("To find " + address);
+      let mapContainer = document.getElementById("map"); // 지도를 표시할 div
+      var geocoder = new kakao.maps.services.Geocoder();
+      let coords = new kakao.maps.LatLng(37.566826, 126.9786567);
+      let map = this.map;
+      geocoder.addressSearch(address, async function(result, status) {
+        // 정상적으로 검색이 완료됐으면
+        if (status === kakao.maps.services.Status.OK) {
+          coords = await new kakao.maps.LatLng(result[0].y, result[0].x);
+          console.log("주소 변경 " + result[0].y + " " + result[0].x);
+          let mapOption = {
+            center: coords, // 지도의 중심좌표
+            level: 5 // 지도의 확대 레벨
+          };
+          // 지도를 생성합니다
+          console.log("지도 생성 " + coords);
+          map = new kakao.maps.Map(mapContainer, mapOption);
+          var marker = new kakao.maps.Marker({
+            map: map,
+            position: coords
+          });
 
+          console.log("마커 생성 " + result[0].y + " " + result[0].x + " ");
+
+          marker.setMap(map);
+          //map.panTo(coords);
+        } else {
+          console.log("주소를 불러오지 못했습니다. " + address);
+        }
+      });
+
+      /*
+      let mapOption = {
+        center: coords, // 지도의 중심좌표
+        level: 5 // 지도의 확대 레벨
+      };
       // 지도를 생성합니다
+      console.log("지도 생성 " + coords);
       this.map = new kakao.maps.Map(mapContainer, mapOption);
-
+      */
       // 장소 검색 객체를 생성합니다
-      var ps = new kakao.maps.services.Places(this.map);
+      this.ps = new kakao.maps.services.Places(this.map);
 
       // 지도에 idle 이벤트를 등록합니다
-      kakao.maps.event.addListener(this.map, "idle", searchPlaces);
+      kakao.maps.event.addListener(this.map, "idle", this.searchPlaces);
 
       // 커스텀 오버레이의 컨텐츠 노드에 css class를 추가합니다
       contentNode.className = "placeinfo_wrap";
 
       // 커스텀 오버레이의 컨텐츠 노드에 mousedown, touchstart 이벤트가 발생했을때
       // 지도 객체에 이벤트가 전달되지 않도록 이벤트 핸들러로 kakao.maps.event.preventMap 메소드를 등록합니다
-      addEventHandle(contentNode, "mousedown", kakao.maps.event.preventMap);
-      addEventHandle(contentNode, "touchstart", kakao.maps.event.preventMap);
+      this.addEventHandle(
+        contentNode,
+        "mousedown",
+        kakao.maps.event.preventMap
+      );
+      this.addEventHandle(
+        contentNode,
+        "touchstart",
+        kakao.maps.event.preventMap
+      );
 
       // 커스텀 오버레이 컨텐츠를 설정합니다
-      placeOverlay.setContent(contentNode);
+      this.placeOverlay.setContent(contentNode);
 
       // 각 카테고리에 클릭 이벤트를 등록합니다
-      addCategoryClickEvent();
+      this.addCategoryClickEvent();
     },
     // 엘리먼트에 이벤트 핸들러를 등록하는 함수입니다
     addEventHandle(target, type, callback) {
@@ -185,7 +268,7 @@ export default {
         // 장소정보를 표출하도록 클릭 이벤트를 등록합니다
         (function(marker, place) {
           kakao.maps.event.addListener(marker, "click", function() {
-            displayPlaceInfo(place);
+            this.displayPlaceInfo(place);
           });
         })(marker, places[i]);
       }
@@ -266,8 +349,8 @@ export default {
         '<div class="after"></div>';
 
       contentNode.innerHTML = content;
-      placeOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
-      placeOverlay.setMap(this.map);
+      this.placeOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
+      this.placeOverlay.setMap(this.map);
     },
 
     // 각 카테고리에 클릭 이벤트를 등록합니다
@@ -276,7 +359,7 @@ export default {
         children = category.children;
 
       for (var i = 0; i < children.length; i++) {
-        children[i].onclick = onClickCategory;
+        children[i].onclick = this.onClickCategory;
       }
     },
 
@@ -285,16 +368,16 @@ export default {
       var id = this.id,
         className = this.className;
 
-      placeOverlay.setMap(null);
+      this.placeOverlay.setMap(null);
 
       if (className === "on") {
-        currCategory = "";
-        changeCategoryClass();
-        removeMarker();
+        this.currCategory = "";
+        this.changeCategoryClass();
+        this.removeMarker();
       } else {
-        currCategory = id;
-        changeCategoryClass(this);
-        searchPlaces();
+        this.currCategory = id;
+        this.changeCategoryClass(this);
+        this.searchPlaces();
       }
     },
 
@@ -317,6 +400,69 @@ export default {
 </script>
 
 <style>
+#category {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  border-radius: 5px;
+  border: 1px solid #909090;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+  background: #fff;
+  overflow: hidden;
+  z-index: 2;
+}
+#category li {
+  float: left;
+  list-style: none;
+  width: 50px;
+  border-right: 1px solid #acacac;
+  padding: 6px 0;
+  text-align: center;
+  cursor: pointer;
+}
+#category li.on {
+  background: #eee;
+}
+#category li:hover {
+  background: #ffe6e6;
+  border-left: 1px solid #acacac;
+  margin-left: -1px;
+}
+#category li:last-child {
+  margin-right: 0;
+  border-right: 0;
+}
+#category li span {
+  display: block;
+  margin: 0 auto 3px;
+  width: 27px;
+  height: 28px;
+}
+#category li .category_bg {
+  background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_category.png)
+    no-repeat;
+}
+#category li .bank {
+  background-position: -10px 0;
+}
+#category li .mart {
+  background-position: -10px -36px;
+}
+#category li .pharmacy {
+  background-position: -10px -72px;
+}
+#category li .oil {
+  background-position: -10px -108px;
+}
+#category li .cafe {
+  background-position: -10px -144px;
+}
+#category li .store {
+  background-position: -10px -180px;
+}
+#category li.on .category_bg {
+  background-position-x: -46px;
+}
 .placeinfo_wrap {
   position: absolute;
   bottom: 28px;

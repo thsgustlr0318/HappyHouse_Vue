@@ -78,12 +78,16 @@ export default {
     ...mapGetters(["apts"])
   },
   mounted() {
-    const script = document.createElement("script");
-    /* global kakao */
-    script.onload = () => kakao.maps.load(this.initMap);
-    script.src =
-      "http://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=751304f0381dd2bffd6225a9c8aeb105&libraries=services";
-    document.head.appendChild(script);
+    if (window.kakao && window.kakao.maps) {
+      this.initMap();
+    } else {
+      const script = document.createElement("script");
+      /* global kakao */
+      script.onload = () => kakao.maps.load(this.initMap);
+      script.src =
+        "http://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=751304f0381dd2bffd6225a9c8aeb105&libraries=services";
+      document.head.appendChild(script);
+    }
   },
   created() {
     http.get("/map/sido", {}).then(({ data }) => {
@@ -131,11 +135,11 @@ export default {
         //console.log(this.dongs);
         console.log(geoList[key]);
         // 주소로 좌표를 검색합니다
-        let test =
+        let address =
           geoList[key].도로명 + " " + geoList[key].도로명건물본번호코드 + "";
         //test = test.replaceAll("\(.*\)|\s-\s.*", "");
-        console.log(test);
-        geocoder.addressSearch(test, function(result, status) {
+        console.log(address);
+        geocoder.addressSearch(address, function(result, status) {
           // 정상적으로 검색이 완료됐으면
           if (status === kakao.maps.services.Status.OK) {
             var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
