@@ -15,6 +15,23 @@
       </card>
     </div>
     <div class="row">
+      <div class="col-md-3"></div>
+      <div class="col-md-3"></div>
+      <div class="col-md-3"></div>
+      <div class="col-md-2">
+        <p-button round outline block>
+          <i
+            class="ti-comment-alt"
+            style="font-size:150%"
+            v-on:click="goRegisterNotificationPage()"
+          >
+            공지사항 작성</i
+          >
+        </p-button>
+      </div>
+    </div>
+
+    <div class="row">
       <div class="col-md-6">
         <h5>Notifications Style</h5>
         <div class="alert alert-info">
@@ -185,6 +202,9 @@ export default {
         verticalAlign: verticalAlign,
         type: this.type[color]
       });
+    },
+    goRegisterNotificationPage() {
+      this.$router.push({ name: "notification-register" });
     }
   },
   created() {

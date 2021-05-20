@@ -1,21 +1,23 @@
 <template>
-  <table class="table" :class="tableClass">
-    <thead>
-      <slot name="columns">
-        <th v-for="column in columns" :key="column">{{ column }}</th>
-      </slot>
-    </thead>
-    <tbody>
-      <tr v-for="(item, index) in data" :key="index">
-        <slot :row="item">
-          <td v-on:click="movePage(item)">{{ item.no }}</td>
-          <td v-on:click="movePage(item)">{{ item.subject }}</td>
-          <td v-on:click="movePage(item)">{{ item.userid }}</td>
-          <td v-on:click="movePage(item)">{{ item.hit }}</td>
+  <div>
+    <table class="table" :class="tableClass">
+      <thead>
+        <slot name="columns">
+          <th v-for="column in columns" :key="column">{{ column }}</th>
         </slot>
-      </tr>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <tr v-for="(item, index) in data" :key="index">
+          <slot :row="item">
+            <td v-on:click="movePage(item)">{{ item.no }}</td>
+            <td v-on:click="movePage(item)">{{ item.subject }}</td>
+            <td v-on:click="movePage(item)">{{ item.userid }}</td>
+            <td v-on:click="movePage(item)">{{ item.hit }}</td>
+          </slot>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 <script>
 export default {

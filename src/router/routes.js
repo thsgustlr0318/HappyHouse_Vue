@@ -78,6 +78,12 @@ const routes = [
             props: true,
             component: () =>
               import("@/components/Notification/NotificationView.vue")
+          },
+          {
+            path: "notification-register",
+            name: "notification-register",
+            component: () =>
+              import("@/components/Notification/NotificationRegister.vue")
           }
         ]
       },
