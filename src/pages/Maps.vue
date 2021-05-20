@@ -122,6 +122,7 @@ export default {
       this.dongCode = "";
       let geoList = this.apts;
       var geocoder = new kakao.maps.services.Geocoder();
+
       for (let key in geoList) {
         console.log(geoList[key].도로명);
       }
