@@ -70,6 +70,7 @@ const routes = [
           {
             path: "notification-view",
             name: "notification-view",
+            props: true,
             component: () =>
               import("@/components/Notification/NotificationView.vue")
           }
@@ -89,6 +90,7 @@ const routes = [
           {
             path: "qna-view",
             name: "qna-view",
+            props: true,
             component: () => import("@/components/Qna/QnaView.vue")
           }
         ]
