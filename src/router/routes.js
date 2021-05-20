@@ -11,6 +11,9 @@ import Maps from "@/pages/Maps.vue";
 import Typography from "@/pages/Typography.vue";
 import TableList from "@/pages/TableList.vue";
 import Login from "@/pages/Login.vue";
+import Qna from "@/pages/Qna.vue";
+
+// import QnaView from "@/components/Qna/QnaView.vue";
 
 const routes = [
   {
@@ -27,11 +30,6 @@ const routes = [
         path: "stats",
         name: "stats",
         component: UserProfile
-      },
-      {
-        path: "notifications",
-        name: "notifications",
-        component: Notifications
       },
       {
         path: "icons",
@@ -58,6 +56,43 @@ const routes = [
         name: "login",
         component: Login
       },
+      {
+        path: "notifications",
+        name: "notifications",
+        component: Notifications,
+        children: [
+          {
+            path: "",
+            name: "notification-list",
+            component: () =>
+              import("@/components/Notification/NotificationList.vue")
+          },
+          {
+            path: "notification-view",
+            name: "notification-view",
+            component: () =>
+              import("@/components/Notification/NotificationView.vue")
+          }
+        ]
+      },
+      {
+        path: "qna",
+        name: "qna",
+        component: Qna,
+        children: [
+          {
+            path: "",
+            name: "qna-list",
+            component: () => import("@/components/Qna/QnaList.vue")
+          },
+
+          {
+            path: "qna-view",
+            name: "qna-view",
+            component: () => import("@/components/Qna/QnaView.vue")
+          }
+        ]
+      }
     ]
   },
   { path: "*", component: NotFound }

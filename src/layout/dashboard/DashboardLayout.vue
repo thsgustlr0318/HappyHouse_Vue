@@ -11,11 +11,9 @@
         />
         <sidebar-link to="/typography" name="Typography" icon="ti-text" />
         <sidebar-link to="/icons" name="Icons" icon="ti-pencil-alt2" />
-        <sidebar-link to="/maps" name="Map" icon="ti-map" />
         <sidebar-link to="/notifications" name="Notifications" icon="ti-bell" />
         <sidebar-link to="/notifications" name="주변 지역 검색" icon="ti-map" />
-        <sidebar-link to="/notifications" name="Notifications" icon="ti-bell" />
-        <sidebar-link to="/notifications" name="Q&A" icon="ti-comments" />
+        <sidebar-link to="/qna" name="Q&A" icon="ti-comments" />
         <sidebar-link to="/stats" name="Introduce" icon="ti-info-alt" />
       </template>
       <mobile-menu>
