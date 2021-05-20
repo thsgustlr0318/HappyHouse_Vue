@@ -69,7 +69,9 @@ export default {
       sidos: [],
       guguns: [],
       dongs: [],
-      dongCode: ""
+      dongCode: "",
+      map: "",
+      markers: []
     };
   },
   computed: {
@@ -115,6 +117,7 @@ export default {
     },
     async sendKeyword() {
       // this.$emit('send-keyword', this.dongCode);
+      let map = this.map;
       this.dongCode = this.gugun;
       console.log("아파트 정보 얻기");
       await this.getAptList(this.dongCode);
@@ -125,35 +128,39 @@ export default {
       var geocoder = new kakao.maps.services.Geocoder();
 
       for (let key in geoList) {
+        //console.log(this.dongs);
         console.log(geoList[key]);
+        // 주소로 좌표를 검색합니다
+        let test =
+          geoList[key].도로명 + " " + geoList[key].도로명건물본번호코드 + "";
+        //test = test.replaceAll("\(.*\)|\s-\s.*", "");
+        console.log(test);
+        geocoder.addressSearch(test, function(result, status) {
+          // 정상적으로 검색이 완료됐으면
+          if (status === kakao.maps.services.Status.OK) {
+            var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+            // 결과값으로 받은 위치를 마커로 표시합니다
+            var marker = new kakao.maps.Marker({
+              map: map,
+              position: coords
+            });
+            marker.setMap(map);
+            // 인포윈도우로 장소에 대한 설명을 표시합니다
+            var infowindow = new kakao.maps.CustomOverlay({
+              position: coords,
+              content:
+                '<span class="info-title">' + geoList[key].아파트 + "</span>"
+            });
+            infowindow.setMap(map);
+
+            // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+            map.panTo(coords);
+          } else {
+            //console.log("주소를 불러오지 못했습니다. " + test);
+          }
+        });
       }
-
-      // 주소로 좌표를 검색합니다
-      var test = this.sido + " " + this.gugun + " 황물로15길 25";
-      geocoder.addressSearch(test, function(result, status) {
-        // 정상적으로 검색이 완료됐으면
-        if (status === kakao.maps.services.Status.OK) {
-          var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-
-          // 결과값으로 받은 위치를 마커로 표시합니다
-          var marker = new kakao.maps.Marker({
-            map: map,
-            position: coords
-          });
-
-          // 인포윈도우로 장소에 대한 설명을 표시합니다
-          var infowindow = new kakao.maps.InfoWindow({
-            content:
-              '<div style="width:150px;text-align:center;padding:6px 0;">우리회사</div>'
-          });
-          infowindow.open(map, marker);
-
-          // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
-          map.setCenter(coords);
-        } else {
-          console.log("주소를 불러오지 못했습니다.");
-        }
-      });
     },
     initMap() {
       var mapContainer = document.getElementById("map"), // 지도를 표시할 div
@@ -162,7 +169,7 @@ export default {
           level: 7 // 지도의 확대 레벨
         };
 
-      var map = new kakao.maps.Map(mapContainer, mapOption);
+      this.map = new kakao.maps.Map(mapContainer, mapOption);
 
       // 마커가 표시될 위치입니다
       var markerPosition = new kakao.maps.LatLng(
@@ -176,9 +183,20 @@ export default {
       });
 
       // 마커가 지도 위에 표시되도록 설정합니다
-      marker.setMap(map);
+      marker.setMap(this.map);
     }
   }
 };
 </script>
-<style></style>
+<style>
+.info-title {
+  display: block;
+  background: #50627f;
+  color: #fff;
+  text-align: center;
+  height: 24px;
+  line-height: 22px;
+  border-radius: 4px;
+  padding: 0px 10px;
+}
+</style>
