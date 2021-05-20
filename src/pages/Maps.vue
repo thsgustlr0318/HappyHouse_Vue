@@ -113,23 +113,23 @@ export default {
           console.log(this.dongs);
         });
     },
-    sendKeyword() {
+    async sendKeyword() {
       // this.$emit('send-keyword', this.dongCode);
       this.dongCode = this.gugun;
       console.log("아파트 정보 얻기");
-      this.getAptList(this.dongCode);
+      await this.getAptList(this.dongCode);
+      console.log("whay");
       //this.$store.dispatch("getAptList", this.dongCode);
       this.dongCode = "";
       let geoList = this.apts;
       var geocoder = new kakao.maps.services.Geocoder();
 
       for (let key in geoList) {
-        console.log(geoList[key].도로명);
+        console.log(geoList[key]);
       }
 
       // 주소로 좌표를 검색합니다
-      var test =
-        this.sido + " " + this.gugun + " " + this.dong + " 황물로15길 25";
+      var test = this.sido + " " + this.gugun + " 황물로15길 25";
       geocoder.addressSearch(test, function(result, status) {
         // 정상적으로 검색이 완료됐으면
         if (status === kakao.maps.services.Status.OK) {
