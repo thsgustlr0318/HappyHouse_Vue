@@ -1,5 +1,5 @@
 <template>
-  <card class="card-map" title="Google Maps">
+  <card class="card-map" title="지역별 아파트 검색">
     <div class="places-buttons">
       <div class="row d-flex justify-content-center">
         <div class="col-md-3">
