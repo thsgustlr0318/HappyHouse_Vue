@@ -8,10 +8,10 @@
     <tbody>
       <tr v-for="(item, index) in data" :key="index">
         <slot :row="item">
-          <td v-on:click="movePage(item.no)">{{ item.no }}</td>
-          <td v-on:click="movePage(item.no)">{{ item.subject }}</td>
-          <td v-on:click="movePage(item.no)">{{ item.userid }}</td>
-          <td v-on:click="movePage(item.no)">{{ item.hit }}</td>
+          <td v-on:click="movePage(item)">{{ item.no }}</td>
+          <td v-on:click="movePage(item)">{{ item.subject }}</td>
+          <td v-on:click="movePage(item)">{{ item.userid }}</td>
+          <td v-on:click="movePage(item)">{{ item.hit }}</td>
         </slot>
       </tr>
     </tbody>
@@ -42,9 +42,9 @@ export default {
     }
   },
   methods: {
-    movePage(no) {
-      console.log(no);
-      this.$router.push({ name: "notification-view", params: { no: no } });
+    movePage(item) {
+      console.log(item);
+      this.$router.push({ name: "notification-view", params: { item: item } });
     }
   }
 };

@@ -8,14 +8,14 @@
     <tbody>
       <tr v-for="(item, index) in data" :key="index">
         <slot :row="item">
-          <td v-on:click="movePage(item.qno)">{{ item.qno }}</td>
-          <td v-on:click="movePage(item.qno)">
+          <td v-on:click="movePage(item)">{{ item.qno }}</td>
+          <td v-on:click="movePage(item)">
             {{ item.chk == 1 ? "답변완료" : "답변미완료" }}
           </td>
-          <td v-on:click="movePage(item.qno)">{{ item.userid }}</td>
-          <td v-on:click="movePage(item.qno)">{{ item.subject }}</td>
-          <td v-on:click="movePage(item.qno)">{{ item.hit }}</td>
-          <td v-on:click="movePage(item.qno)">{{ item.time }}</td>
+          <td v-on:click="movePage(item)">{{ item.userid }}</td>
+          <td v-on:click="movePage(item)">{{ item.subject }}</td>
+          <td v-on:click="movePage(item)">{{ item.hit }}</td>
+          <td v-on:click="movePage(item)">{{ item.time }}</td>
         </slot>
       </tr>
       <!-- <router-view></router-view> -->
@@ -47,9 +47,9 @@ export default {
     }
   },
   methods: {
-    movePage(qno) {
-      console.log(qno);
-      this.$router.push({ name: "qna-view", params: { qno: qno } });
+    movePage(item) {
+      console.log(item);
+      this.$router.push({ name: "qna-view", params: { item: item } });
     }
   }
 };
