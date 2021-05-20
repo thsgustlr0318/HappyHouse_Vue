@@ -22,10 +22,10 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <router-link :to="{ name: 'login' }" class="nav-link">
               <i class="ti-lock"></i>
               <p>login</p>
-            </a>
+            </router-link>
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link">
