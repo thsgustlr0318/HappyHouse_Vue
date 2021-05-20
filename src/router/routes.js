@@ -12,7 +12,7 @@ import Typography from "@/pages/Typography.vue";
 import TableList from "@/pages/TableList.vue";
 import Login from "@/pages/Login.vue";
 import Qna from "@/pages/Qna.vue";
-
+import AptInfo from "@/pages/Apt/AptInfo.vue";
 // import QnaView from "@/components/Qna/QnaView.vue";
 
 const routes = [
@@ -55,6 +55,11 @@ const routes = [
         path: "login",
         name: "login",
         component: Login
+      },
+      {
+        path: "apt",
+        name: "apt-info",
+        component: AptInfo
       },
       {
         path: "notifications",
