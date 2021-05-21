@@ -1,10 +1,22 @@
 <template>
-  <div class="col-12">
-    <card class="card-plain">
-      <div class="table-full-width table-responsive">
-        <qna-table type="hover" :data="data" :columns="columns"> </qna-table>
+  <div>
+    <div class="col-12">
+      <card class="card-plain">
+        <div class="table-full-width table-responsive">
+          <qna-table type="hover" :data="data" :columns="columns"> </qna-table>
+        </div>
+      </card>
+    </div>
+    <div class="row">
+      <div class="col-md-3"></div>
+      <div class="col-md-3"></div>
+      <div class="col-md-3"></div>
+      <div class="col-md-2" v-on:click="goRegisterQnaPage()">
+        <p-button round outline block>
+          <i class="ti-comment-alt" style="font-size:150%"> Q&A 작성</i>
+        </p-button>
       </div>
-    </card>
+    </div>
   </div>
 </template>
 
@@ -51,9 +63,9 @@ export default {
     });
   },
   methods: {
-    // movePage() {
-    //   this.$router.push({ name: "qna-create" });
-    // }
+    goRegisterQnaPage() {
+      this.$router.push({ name: "qna-register" });
+    }
   }
 };
 </script>

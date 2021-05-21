@@ -1,5 +1,5 @@
 <template>
-  <card class="card" title="공지 작성">
+  <card class="card" title="Q&A 작성">
     <div>
       <form>
         <div class="row">
@@ -7,7 +7,7 @@
             <fg-input
               type="text"
               label="제목"
-              placeholder="공지 제목을 입력하세요."
+              placeholder="Q&A 제목을 입력하세요."
               v-model="subject"
             >
             </fg-input>
@@ -33,14 +33,14 @@
               <textarea
                 rows="5"
                 class="form-control border-input"
-                placeholder="공지 내용을 입력하세요"
+                placeholder="Q&A 내용을 입력하세요"
                 v-model="content"
               >
               </textarea>
             </div>
           </div>
         </div>
-        <div class="text-center" v-on:click="registerNotification()">
+        <div class="text-center" v-on:click="registerQna()">
           <p-button round type="info">
             입력
           </p-button>
@@ -62,9 +62,9 @@ export default {
     };
   },
   methods: {
-    registerNotification() {
+    registerQna() {
       http
-        .post("notice/add", {
+        .post("qna/add", {
           userid: this.userid,
           subject: this.subject,
           content: this.content
@@ -75,11 +75,11 @@ export default {
             msg = "등록이 완료되었습니다.";
           }
           alert(msg);
-          this.moveNoticeList();
+          this.moveQnaList();
         });
     },
-    moveNoticeList() {
-      this.$router.push("/notifications");
+    moveQnaList() {
+      this.$router.push("/qna");
     }
   }
 };
