@@ -8,52 +8,69 @@
             <table class="table table-striped">
               <tbody>
                 <tr>
-                    <td>
-                      위치
-                    </td>
-                    <td>
-                      {{ apt.법정동 }} 
-                    </td>
+                  <td>
+                    위치
+                  </td>
+                  <td>
+                    {{ apt.법정동 }}
+                  </td>
                 </tr>
                 <tr>
-                    <td>
-                      건축년도
-                    </td>
-                    <td>
-                      {{ apt.건축년도 }} 년
-                    </td>
+                  <td>
+                    건축년도
+                  </td>
+                  <td>{{ apt.건축년도 }} 년</td>
                 </tr>
                 <tr>
-                    <td>
-                      거래금액
-                    </td>
-                    <td>
-                      {{ apt.거래금액 }} 만원
-                    </td>
+                  <td>
+                    거래금액
+                  </td>
+                  <td>{{ apt.거래금액 }} 만원</td>
                 </tr>
                 <tr>
-                    <td>
-                      거래일자
-                    </td>
-                    <td>
-                      {{ apt.년 }}-{{ apt.월 }}-{{ apt.일 }}
-                    </td>
+                  <td>
+                    거래일자
+                  </td>
+                  <td>{{ apt.년 }}-{{ apt.월 }}-{{ apt.일 }}</td>
                 </tr>
                 <tr>
-                    <td>
-                      면적
-                    </td>
-                    <td>
-                      {{ apt.전용면적 }} m2
-                    </td>
+                  <td>
+                    면적
+                  </td>
+                  <td>{{ apt.전용면적 }} m2</td>
                 </tr>
                 <tr>
-                    <td>
-                      층
-                    </td>
-                    <td>
-                      {{ apt.층 }} 층
-                    </td>
+                  <td>
+                    층
+                  </td>
+                  <td>{{ apt.층 }} 층</td>
+                </tr>
+                <tr>
+                  <td>
+                    도로명
+                  </td>
+                  <td>
+                    {{ apt.도로명 }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    일련번호
+                  </td>
+                  <td>
+                    {{ apt.일련번호 }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    해제일
+                  </td>
+                  <td v-if="apt.해제여부 == ' '">
+                    없음
+                  </td>
+                  <td v-if="apt.해제여부 != ' '">
+                    {{ apt.해제사유발생일 }}
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -65,27 +82,27 @@
           <div class="map">
             <div id="map"></div>
             <ul id="category">
-              <li id="BK9" data-order="0">
+              <li id="BK9" data-order="0" v-on:click="onClickCategory($event)">
                 <span class="category_bg bank"></span>
                 은행
               </li>
-              <li id="MT1" data-order="1">
+              <li id="MT1" data-order="1" v-on:click="onClickCategory($event)">
                 <span class="category_bg mart"></span>
                 마트
               </li>
-              <li id="PM9" data-order="2">
+              <li id="PM9" data-order="2" v-on:click="onClickCategory($event)">
                 <span class="category_bg pharmacy"></span>
                 약국
               </li>
-              <li id="OL7" data-order="3">
+              <li id="OL7" data-order="3" v-on:click="onClickCategory($event)">
                 <span class="category_bg oil"></span>
                 주유소
               </li>
-              <li id="CE7" data-order="4">
+              <li id="CE7" data-order="4" v-on:click="onClickCategory($event)">
                 <span class="category_bg cafe"></span>
                 카페
               </li>
-              <li id="CS2" data-order="5">
+              <li id="CS2" data-order="5" v-on:click="onClickCategory($event)">
                 <span class="category_bg store"></span>
                 편의점
               </li>
@@ -108,7 +125,8 @@ export default {
       map: "",
       ps: "",
       currCategory: "",
-      placeOverlay: ""
+      placeOverlay: "",
+      contentNode: ""
     };
   },
   components: {
@@ -138,23 +156,24 @@ export default {
   methods: {
     // 카테고리 검색을 요청하는 함수입니다
     searchPlaces() {
+
       if (!this.currCategory) {
         return;
       }
-
+      console.log("search "+this.currCategory);
       // 커스텀 오버레이를 숨깁니다
-      placeOverlay.setMap(null);
+      this.placeOverlay.setMap(null);
 
       // 지도에 표시되고 있는 마커를 제거합니다
       this.removeMarker();
 
-      ps.categorySearch(currCategory, placesSearchCB, { useMapBounds: true });
+      this.ps.categorySearch(this.currCategory, this.placesSearchCB, { useMapBounds: true });
     },
 
     initMap() {
       // 마커를 클릭했을 때 해당 장소의 상세정보를 보여줄 커스텀오버레이입니다
       this.placeOverlay = new kakao.maps.CustomOverlay({ zIndex: 1 });
-      var contentNode = document.createElement("div"); // 커스텀 오버레이의 컨텐츠 엘리먼트 입니다
+      this.contentNode = document.createElement("div"); // 커스텀 오버레이의 컨텐츠 엘리먼트 입니다
       this.markers = []; // 마커를 담을 배열입니다
       this.currCategory = ""; // 현재 선택된 카테고리를 가지고 있을 변수입니다
 
@@ -165,31 +184,60 @@ export default {
       var geocoder = new kakao.maps.services.Geocoder();
       let coords = new kakao.maps.LatLng(37.566826, 126.9786567);
       let map = this.map;
-      geocoder.addressSearch(address, async function(result, status) {
-        // 정상적으로 검색이 완료됐으면
-        if (status === kakao.maps.services.Status.OK) {
-          coords = await new kakao.maps.LatLng(result[0].y, result[0].x);
-          console.log("주소 변경 " + result[0].y + " " + result[0].x);
-          let mapOption = {
-            center: coords, // 지도의 중심좌표
-            level: 5 // 지도의 확대 레벨
-          };
-          // 지도를 생성합니다
-          console.log("지도 생성 " + coords);
-          map = new kakao.maps.Map(mapContainer, mapOption);
-          var marker = new kakao.maps.Marker({
-            map: map,
-            position: coords
-          });
+      geocoder.addressSearch(
+        address,
+        async function(result, status) {
+          // 정상적으로 검색이 완료됐으면
+          if (status === kakao.maps.services.Status.OK) {
+            coords = await new kakao.maps.LatLng(result[0].y, result[0].x);
+            console.log("주소 변경 " + result[0].y + " " + result[0].x);
+            let mapOption = {
+              center: coords, // 지도의 중심좌표
+              level: 5 // 지도의 확대 레벨
+            };
+            // 지도를 생성합니다
+            console.log("지도 생성 " + coords);
+            map = new kakao.maps.Map(mapContainer, mapOption);
+            var marker = new kakao.maps.Marker({
+              map: map,
+              position: coords
+            });
+            
+            console.log("마커 생성 " + result[0].y + " " + result[0].x + " ");
 
-          console.log("마커 생성 " + result[0].y + " " + result[0].x + " ");
+            marker.setMap(map);
+            //map.panTo(coords);
+            this.ps = new kakao.maps.services.Places(map);
+            console.log("이벤트 등록");
+            // 지도에 idle 이벤트를 등록합니다
+            kakao.maps.event.addListener(map, "idle", this.searchPlaces);
 
-          marker.setMap(map);
-          //map.panTo(coords);
-        } else {
-          console.log("주소를 불러오지 못했습니다. " + address);
-        }
-      });
+            // 커스텀 오버레이의 컨텐츠 노드에 css class를 추가합니다
+            this.contentNode.className = "placeinfo_wrap";
+
+            // 커스텀 오버레이의 컨텐츠 노드에 mousedown, touchstart 이벤트가 발생했을때
+            // 지도 객체에 이벤트가 전달되지 않도록 이벤트 핸들러로 kakao.maps.event.preventMap 메소드를 등록합니다
+            this.addEventHandle(
+              this.contentNode,
+              "mousedown",
+              kakao.maps.event.preventMap
+            );
+            this.addEventHandle(
+              this.contentNode,
+              "touchstart",
+              kakao.maps.event.preventMap
+            );
+
+            // 커스텀 오버레이 컨텐츠를 설정합니다
+            this.placeOverlay.setContent(this.contentNode);
+            this.map = map;
+            // 각 카테고리에 클릭 이벤트를 등록합니다
+            //this.addCategoryClickEvent();
+          } else {
+            console.log("주소를 불러오지 못했습니다. " + address);
+          }
+        }.bind(this)
+      );
 
       /*
       let mapOption = {
@@ -201,32 +249,6 @@ export default {
       this.map = new kakao.maps.Map(mapContainer, mapOption);
       */
       // 장소 검색 객체를 생성합니다
-      this.ps = new kakao.maps.services.Places(this.map);
-
-      // 지도에 idle 이벤트를 등록합니다
-      kakao.maps.event.addListener(this.map, "idle", this.searchPlaces);
-
-      // 커스텀 오버레이의 컨텐츠 노드에 css class를 추가합니다
-      contentNode.className = "placeinfo_wrap";
-
-      // 커스텀 오버레이의 컨텐츠 노드에 mousedown, touchstart 이벤트가 발생했을때
-      // 지도 객체에 이벤트가 전달되지 않도록 이벤트 핸들러로 kakao.maps.event.preventMap 메소드를 등록합니다
-      this.addEventHandle(
-        contentNode,
-        "mousedown",
-        kakao.maps.event.preventMap
-      );
-      this.addEventHandle(
-        contentNode,
-        "touchstart",
-        kakao.maps.event.preventMap
-      );
-
-      // 커스텀 오버레이 컨텐츠를 설정합니다
-      this.placeOverlay.setContent(contentNode);
-
-      // 각 카테고리에 클릭 이벤트를 등록합니다
-      this.addCategoryClickEvent();
     },
     // 엘리먼트에 이벤트 핸들러를 등록하는 함수입니다
     addEventHandle(target, type, callback) {
@@ -241,7 +263,7 @@ export default {
     placesSearchCB(data, status, pagination) {
       if (status === kakao.maps.services.Status.OK) {
         // 정상적으로 검색이 완료됐으면 지도에 마커를 표출합니다
-        displayPlaces(data);
+        this.displayPlaces(data);
       } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
         // 검색결과가 없는경우 해야할 처리가 있다면 이곳에 작성해 주세요
       } else if (status === kakao.maps.services.Status.ERROR) {
@@ -253,13 +275,17 @@ export default {
     displayPlaces(places) {
       // 몇번째 카테고리가 선택되어 있는지 얻어옵니다
       // 이 순서는 스프라이트 이미지에서의 위치를 계산하는데 사용됩니다
+      console.log("display "+this.currCategory+":: "+places);
+      console.log(document.getElementById(this.currCategory));
       var order = document
-        .getElementById(currCategory)
+        .getElementById(this.currCategory)
         .getAttribute("data-order");
+
+
 
       for (var i = 0; i < places.length; i++) {
         // 마커를 생성하고 지도에 표시합니다
-        var marker = addMarker(
+        var marker = this.addMarker(
           new kakao.maps.LatLng(places[i].y, places[i].x),
           order
         );
@@ -269,8 +295,8 @@ export default {
         (function(marker, place) {
           kakao.maps.event.addListener(marker, "click", function() {
             this.displayPlaceInfo(place);
-          });
-        })(marker, places[i]);
+          }.bind(this));
+        }.bind(this))(marker, places[i]);
       }
     },
 
@@ -294,9 +320,9 @@ export default {
           image: markerImage
         });
 
-      marker.setMap(map); // 지도 위에 마커를 표출합니다
+      marker.setMap(this.map); // 지도 위에 마커를 표출합니다
+      
       this.markers.push(marker); // 배열에 생성된 마커를 추가합니다
-
       return marker;
     },
 
@@ -348,26 +374,30 @@ export default {
         "</div>" +
         '<div class="after"></div>';
 
-      contentNode.innerHTML = content;
+      this.contentNode.innerHTML = content;
       this.placeOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
       this.placeOverlay.setMap(this.map);
     },
 
     // 각 카테고리에 클릭 이벤트를 등록합니다
+    /*
     addCategoryClickEvent() {
+      console.log("add event");
       var category = document.getElementById("category"),
         children = category.children;
 
       for (var i = 0; i < children.length; i++) {
         children[i].onclick = this.onClickCategory;
+        console.log("add "+children[i].id);
       }
     },
-
+*/
     // 카테고리를 클릭했을 때 호출되는 함수입니다
-    onClickCategory() {
-      var id = this.id,
-        className = this.className;
-
+    onClickCategory(child) {
+      
+      var id = child.currentTarget.id,
+        className = child.className;
+      console.log("click! "+id+" "+className);
       this.placeOverlay.setMap(null);
 
       if (className === "on") {
@@ -376,7 +406,7 @@ export default {
         this.removeMarker();
       } else {
         this.currCategory = id;
-        this.changeCategoryClass(this);
+        this.changeCategoryClass(child);
         this.searchPlaces();
       }
     },
