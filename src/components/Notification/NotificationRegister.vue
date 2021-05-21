@@ -63,7 +63,6 @@ export default {
   },
   methods: {
     registerNotification() {
-      console.log("4242");
       http
         .post("notice/add", {
           userid: this.userid,

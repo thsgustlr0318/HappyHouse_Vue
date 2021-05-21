@@ -18,15 +18,9 @@
       <div class="col-md-3"></div>
       <div class="col-md-3"></div>
       <div class="col-md-3"></div>
-      <div class="col-md-2">
+      <div class="col-md-2" v-on:click="goRegisterNotificationPage()">
         <p-button round outline block>
-          <i
-            class="ti-comment-alt"
-            style="font-size:150%"
-            v-on:click="goRegisterNotificationPage()"
-          >
-            공지사항 작성</i
-          >
+          <i class="ti-comment-alt" style="font-size:150%"> 공지사항 작성</i>
         </p-button>
       </div>
     </div>
