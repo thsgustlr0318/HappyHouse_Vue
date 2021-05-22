@@ -103,6 +103,11 @@ const routes = [
             name: "qna-view",
             props: true,
             component: () => import("@/components/Qna/QnaView.vue")
+          },
+          {
+            path: "qna-register",
+            name: "qna-register",
+            component: () => import("@/components/Qna/QnaRegister.vue")
           }
         ]
       }
