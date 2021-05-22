@@ -12,11 +12,20 @@
         />
         <h4 class="title">
           Logn and Enjoy!
-          <br />
         </h4>
       </div>
     </div>
+    </br>
+    <div v-if="info.data" :class="'alert '+info.color">
+      <button type="button" aria-hidden="true" class="close">×</button>
+      <i class="ti-check">
+        <span>
+          {{ info.data }} </span
+        >
+      </i>
+    </div>
     <div>
+      <br />
       <form @submit.prevent>
         <div class="row">
           <div class="col-md-12">
@@ -32,7 +41,7 @@
         <div class="row">
           <div class="col-md-12">
             <fg-input
-              type="text"
+              type="password"
               label="Password"
               placeholder="user password"
               v-model="user.userpwd"
@@ -70,14 +79,22 @@ export default {
   },
   methods: {
     updateProfile() {
-      alert("Your data: " + JSON.stringify(this.user));
+      //alert("Your data: " + JSON.stringify(this.user));
       http.post("/user/login",{
         userid: this.user.userid,
         userpwd: this.user.userpwd
       }).then((res) => {
         console.log(JSON.stringify(res.data));
+        if( res.data ){
+          this.info.data = "로그인 성공!";
+          this.info.color = "alert-success";
+        }else{
+          this.info.data = "아이디/비밀번호를 다시 확인해주세요.";
+          this.info.color = "alert-danger";
+        }
       }).catch( e=>{
-        this.info.data = "로그인 실패";
+        this.info.data = "서버 에러";
+        this.info.color = "alert-warning";
       })
     }
   }
