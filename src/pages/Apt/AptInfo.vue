@@ -78,10 +78,10 @@
         </card>
       </div>
       <div class="col-sm-8">
-        <card class="card-map" title="주변 정보">
+        <card class="card-map" title="주변 상권 정보">
           <div class="map">
-            <div id="map"></div>
-            <ul id="category">
+            <div id="map">
+              <ul id="category">
               <li id="BK9" data-order="0" v-on:click="onClickCategory($event)">
                 <span class="category_bg bank"></span>
                 은행
@@ -107,8 +107,11 @@
                 편의점
               </li>
             </ul>
+
+            </div>
+            
           </div>
-        </card>
+        </card> 
       </div>
     </div>
   </div>

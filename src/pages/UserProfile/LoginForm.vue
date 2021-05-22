@@ -23,8 +23,8 @@
             <fg-input
               type="text"
               label="ID"
-              :placeholder="user.id"
-              v-model="user.id"
+              placeholder="user id"
+              v-model="user.userid"
             >
             </fg-input>
           </div>
@@ -34,8 +34,8 @@
             <fg-input
               type="text"
               label="Password"
-              :placeholder="user.password"
-              v-model="user.password"
+              placeholder="user password"
+              v-model="user.userpwd"
             >
             </fg-input>
           </div>
@@ -53,18 +53,32 @@
   </card>
 </template>
 <script>
+import http from "@/util/http-common";
+
 export default {
   data() {
     return {
       user: {
-        id: "user id",
-        password: "user password"
+        userid: "",
+        userpwd: ""
+      },
+      info: {
+        data: "",
+        color: ""
       }
     };
   },
   methods: {
     updateProfile() {
       alert("Your data: " + JSON.stringify(this.user));
+      http.post("/user/login",{
+        userid: this.user.userid,
+        userpwd: this.user.userpwd
+      }).then((res) => {
+        console.log(JSON.stringify(res.data));
+      }).catch( e=>{
+        this.info.data = "로그인 실패";
+      })
     }
   }
 };
