@@ -14,23 +14,11 @@
         <span class="navbar-toggler-bar"></span>
       </button>
       <div class="collapse navbar-collapse">
-        <ul class="navbar-nav ml-auto">
+        <ul  v-if="userinfo.userid" class="navbar-nav ml-auto">
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="ti-user"></i>
-              <p>mypage</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <router-link :to="{ name: 'login' }" class="nav-link">
-              <i class="ti-lock"></i>
-              <p>login</p>
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="ti-unlock"></i>
-              <p>logout</p>
+              <p>{{userinfo.userid}}</p>
             </a>
           </li>
           <drop-down
@@ -53,14 +41,31 @@
               </p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="ti-unlock"></i>
+              <p>logout</p>
+            </a>
+          </li>
+        </ul>
+        <ul  v-if="!userinfo.userid" class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <router-link :to="{ name: 'login' }" class="nav-link">
+              <i class="ti-lock"></i>
+              <p>login</p>
+            </router-link>
+          </li>
+        </ul>
         </ul>
       </div>
     </div>
   </nav>
 </template>
 <script>
+import { mapState } from "vuex";
 export default {
   computed: {
+    ...mapState(["userinfo"]),
     routeName() {
       const { name } = this.$route;
       return this.capitalizeFirstLetter(name);

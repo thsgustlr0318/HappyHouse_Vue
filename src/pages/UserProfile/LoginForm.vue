@@ -51,7 +51,7 @@
         </div>
         </br>
         <div class="text-center">
-          <p-button type="info" round @click.native.prevent="updateProfile">
+          <p-button type="info" round @click.native.prevent="checkLogin">
             Login
           </p-button>
         </div>
@@ -63,7 +63,7 @@
 </template>
 <script>
 import http from "@/util/http-common";
-
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -78,16 +78,23 @@ export default {
     };
   },
   methods: {
-    updateProfile() {
+    ...mapActions(["login"]),
+    checkLogin() {
       //alert("Your data: " + JSON.stringify(this.user));
       http.post("/user/login",{
         userid: this.user.userid,
         userpwd: this.user.userpwd
       }).then((res) => {
-        console.log(JSON.stringify(res.data));
+        //console.log(JSON.stringify(res.data));
         if( res.data ){
           this.info.data = "로그인 성공!";
           this.info.color = "alert-success";
+          console.log("sdfsfs3"+res.data);
+          let userinfo = {
+            userid: this.user.userid,
+            auth: res.data
+          };
+          this.login(userinfo);
         }else{
           this.info.data = "아이디/비밀번호를 다시 확인해주세요.";
           this.info.color = "alert-danger";

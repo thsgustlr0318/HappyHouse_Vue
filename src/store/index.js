@@ -8,11 +8,15 @@ export default new Vuex.Store({
   state: {
     apts: [],
     apt: Object,
-    address: Object
+    address: Object,
+    userinfo: Object
   },
   getters: {
     apts(state) {
       return state.apts;
+    },
+    userinfo(state) {
+      return state.userinfo;
     }
   },
   mutations: {
@@ -22,7 +26,11 @@ export default new Vuex.Store({
     },
     SELECT_APT(state, payload) {
       state.apt = payload;
-    }
+    },
+    GET_USER_INFO(state, payload) {
+      // console.log(state, apts);
+      state.userinfo = payload;
+    },
   },
   actions: {
     async getAptList({ commit }, dongCode) {
@@ -57,7 +65,21 @@ export default new Vuex.Store({
     },
     selectApt({ commit }, apt) {
       commit("SELECT_APT", apt);
+    },
+    login({ commit }, info) {
+      //storage.setItem("userinfo", userinfo);
+      commit("GET_USER_INFO", info);
+    },
+    logout({ commit }, userinfo) {
+      storage.setItem("userinfo", []);
+      commit("GET_USER_INFO", []);
+    },
+    init() {
+      this.userinfo = storage.getItem("userinfo");
     }
+  },
+  mounted() {
+    //this.init();
   },
   modules: {}
   // plugins: [createPersistedState()],

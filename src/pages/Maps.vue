@@ -125,7 +125,6 @@ export default {
       this.dongCode = this.gugun;
       console.log("아파트 정보 얻기");
       await this.getAptList(this.dongCode);
-      console.log("whay");
       //this.$store.dispatch("getAptList", this.dongCode);
       this.dongCode = "";
       let geoList = this.apts;
