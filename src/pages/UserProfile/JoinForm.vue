@@ -131,6 +131,31 @@ export default {
     document.head.appendChild(script);
   },
   methods: {
+    checkJoin() {
+      http
+        .post("/user/join", {
+          userid: this.user.userid,
+          userpwd: this.user.userpwd,
+          username: this.user.username,
+          email: this.user.email,
+          cellphone: this.user.cellphone,
+          address: this.user.address
+        })
+        .then(res => {
+          console.log(res);
+          if (res.status == 200) {
+            this.info.data = "회원가입 성공!";
+            this.info.color = "alert-success";
+          } else {
+            this.info.data = "회원가입 실패!";
+            this.info.color = "alert-danger";
+          }
+        })
+        .catch(e => {
+          this.info.data = "서버 에러";
+          this.info.color = "alert-warning";
+        });
+    },
     DaumPostcode() {
       new daum.Postcode({
         oncomplete: function(data) {
@@ -159,36 +184,6 @@ export default {
           }
         }.bind(this)
       }).open();
-    },
-    checkLogin() {
-      //alert("Your data: " + JSON.stringify(this.user));
-      /*
-      http
-        .post("/user/login", {
-          userid: this.user.userid,
-          userpwd: this.user.userpwd
-        })
-        .then(res => {
-          //console.log(JSON.stringify(res.data));
-          if (res.data) {
-            this.info.data = "로그인 성공!";
-            this.info.color = "alert-success";
-            console.log("sdfsfs3" + res.data);
-            let userinfo = {
-              userid: this.user.userid,
-              auth: res.data
-            };
-            this.login(userinfo);
-          } else {
-            this.info.data = "아이디/비밀번호를 다시 확인해주세요.";
-            this.info.color = "alert-danger";
-          }
-        })
-        .catch(e => {
-          this.info.data = "서버 에러";
-          this.info.color = "alert-warning";
-        });
-        */
     }
   }
 };
