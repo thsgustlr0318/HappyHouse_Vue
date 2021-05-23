@@ -83,6 +83,7 @@
         <div class="row">
           <div class="col-md-12">
             <fg-input
+              @click.native.prevent="DaumPostcode"
               type="text"
               label="Address"
               placeholder="click!"
@@ -105,13 +106,16 @@
 </template>
 <script>
 import http from "@/util/http-common";
-import { mapActions } from "vuex";
 export default {
   data() {
     return {
       user: {
         userid: "",
-        userpwd: ""
+        userpwd: "",
+        username: "",
+        email: "",
+        cellphone: "",
+        address: ""
       },
       info: {
         data: "",
@@ -119,10 +123,46 @@ export default {
       }
     };
   },
+  mounted() {
+    const script = document.createElement("script");
+    /* global kakao */
+    script.src =
+      "https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+    document.head.appendChild(script);
+  },
   methods: {
-    ...mapActions(["login"]),
+    DaumPostcode() {
+      new daum.Postcode({
+        oncomplete: function(data) {
+          var roadAddr = data.roadAddress;
+          var extraRoadAddr = "";
+
+          if (data.bname !== "" && /[동|로|가]$/g.test(data.bname)) {
+            extraRoadAddr += data.bname;
+          }
+
+          if (data.buildingName !== "" && data.apartment === "Y") {
+            extraRoadAddr +=
+              extraRoadAddr !== ""
+                ? ", " + data.buildingName
+                : data.buildingName;
+          }
+
+          if (extraRoadAddr !== "") {
+            extraRoadAddr = " (" + extraRoadAddr + ")";
+          }
+
+          this.user.address = roadAddr + data.jibunAddress;
+
+          if (roadAddr !== "") {
+            this.user.address = roadAddr + extraRoadAddr;
+          }
+        }.bind(this)
+      }).open();
+    },
     checkLogin() {
       //alert("Your data: " + JSON.stringify(this.user));
+      /*
       http
         .post("/user/login", {
           userid: this.user.userid,
@@ -148,6 +188,7 @@ export default {
           this.info.data = "서버 에러";
           this.info.color = "alert-warning";
         });
+        */
     }
   }
 };
