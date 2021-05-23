@@ -69,14 +69,35 @@
               <label id="answer">A</label>
               <div v-for="(ans, index) in answerItem" :key="index">
                 <textarea
+                  v-if="answerModify == ans.ano"
+                  rows="5"
+                  class="form-control border-input"
+                  v-model="ans.content"
+                >
+                </textarea>
+                <textarea
+                  v-if="answerModify != ans.ano"
                   rows="5"
                   class="form-control border-input"
                   disabled="true"
                   v-model="ans.content"
                 >
                 </textarea>
+
                 <button v-on:click="deleteAnswer(ans.ano)">
                   답변 삭제
+                </button>
+                <button
+                  v-if="answerModify != ans.ano"
+                  v-on:click="modifyAnswer(ans.ano)"
+                >
+                  답변 수정
+                </button>
+                <button
+                  v-if="answerModify == ans.ano"
+                  v-on:click="modifyQnaAnswer(ans.ano, ans.content)"
+                >
+                  답변 수정 완료
                 </button>
                 <br /><br />
               </div>
@@ -148,7 +169,8 @@ export default {
     return {
       answerItem: {},
       answerContent: " ",
-      regist: false
+      regist: false,
+      answerModify: -1
     };
   },
   props: {
@@ -166,6 +188,12 @@ export default {
     }
   },
   methods: {
+    updateAnswerList() {
+      http.get("qna/answer/" + `${this.item.qno}`).then(({ data }) => {
+        console.log(data);
+        this.answerItem = data;
+      });
+    },
     changeMode() {
       this.modify = !this.modify;
     },
@@ -184,6 +212,7 @@ export default {
           }
           alert(msg);
           this.modify = false;
+          updateAnswerList();
         });
     },
     deleteQna() {
@@ -217,13 +246,8 @@ export default {
           // this.moveList();
           this.regist = false;
           this.answerContent = "";
+          this.updateAnswerList();
           // this.$router.push({ name: "qna-view", params: { item: this.item } });
-          http.get("qna/answer/" + `${this.item.qno}`).then(({ data }) => {
-            console.log(data);
-            this.answerItem = data;
-            // console.log("답변:" + data);
-            // alert(msg);
-          });
         });
     },
     deleteAnswer(ano) {
@@ -233,9 +257,29 @@ export default {
           if (data === "success") {
             msg = "삭제가 완료되었습니다.";
           }
-          alert(msg);
-          this.$router.push("/qna");
+          this.updateAnswerList();
         });
+      }
+    },
+    modifyAnswer(ano) {
+      this.answerModify = ano;
+    },
+    modifyQnaAnswer(ano, content) {
+      if (confirm("답변을 수정하시겠습니까?")) {
+        http
+          .put("qna/answer/update/" + ano, {
+            qno: this.item.qno,
+            ano: ano,
+            content: content
+          })
+          .then(({ data }) => {
+            let msg = "수정 처리시 문제가 발생했습니다.";
+            if (data === "success") {
+              msg = "수정이 완료되었습니다.";
+            }
+            this.answerModify = -1;
+            this.updateAnswerList();
+          });
       }
     }
   }
