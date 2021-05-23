@@ -63,7 +63,7 @@
         </div>
 
         <!-- 답변 출력 -->
-        <div v-if="this.item.chk == 1" class="row">
+        <div v-if="this.item.chk == 1 || printAnswerList" class="row">
           <div class="col-md-12">
             <div class="form-group">
               <label id="answer">A</label>
@@ -170,7 +170,8 @@ export default {
       answerItem: {},
       answerContent: " ",
       regist: false,
-      answerModify: -1
+      answerModify: -1,
+      printAnswerList: false
     };
   },
   props: {
@@ -246,6 +247,7 @@ export default {
           // this.moveList();
           this.regist = false;
           this.answerContent = "";
+          this.printAnswerList = true;
           this.updateAnswerList();
           // this.$router.push({ name: "qna-view", params: { item: this.item } });
         });
