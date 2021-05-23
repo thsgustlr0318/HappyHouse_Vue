@@ -55,6 +55,12 @@
               <p>login</p>
             </router-link>
           </li>
+          <li class="nav-item">
+            <router-link :to="{ name: 'join' }" class="nav-link">
+              <i class="ti-user"></i>
+              <p>join</p>
+            </router-link>
+          </li>
         </ul>
       </div>
     </div>

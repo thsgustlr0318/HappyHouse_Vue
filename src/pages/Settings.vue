@@ -4,20 +4,22 @@
       <edit-profile-form> </edit-profile-form>
     </div>
     <div class="col-xl-4 col-lg-5 col-md-6">
-      <user-card> </user-card>
-      <members-card> </members-card>
+      <my-question> </my-question>
+      <my-location> </my-location>
     </div>
   </div>
 </template>
 <script>
 import EditProfileForm from "./UserProfile/EditProfileForm.vue";
 import UserCard from "./UserProfile/UserCard.vue";
-import MembersCard from "./UserProfile/MembersCard.vue";
+import MyLocation from "@/pages/UserProfile/MyLocation.vue";
+import MyQuestion from "@/pages/UserProfile/MyQuestion.vue";
 export default {
   components: {
     EditProfileForm,
     UserCard,
-    MembersCard
+    MyLocation,
+    MyQuestion
   }
 };
 </script>

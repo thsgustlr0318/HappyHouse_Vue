@@ -10,6 +10,7 @@ import Icons from "@/pages/Icons.vue";
 import Maps from "@/pages/Maps.vue";
 import Typography from "@/pages/Typography.vue";
 import TableList from "@/pages/TableList.vue";
+import Join from "@/pages/Join.vue";
 import Login from "@/pages/Login.vue";
 import Settings from "@/pages/Settings.vue";
 import Qna from "@/pages/Qna.vue";
@@ -56,6 +57,11 @@ const routes = [
         path: "login",
         name: "login",
         component: Login
+      },
+      {
+        path: "join",
+        name: "join",
+        component: Join
       },
       {
         path: "settings",

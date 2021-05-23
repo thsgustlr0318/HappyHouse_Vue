@@ -11,7 +11,7 @@
           alt="..."
         />
         <h4 class="title">
-          Logn and Enjoy!
+          Join and Enjoy!
         </h4>
       </div>
     </div>
@@ -47,10 +47,54 @@
             </fg-input>
           </div>
         </div>
+        <div class="row">
+          <div class="col-md-12">
+            <fg-input
+              type="text"
+              label="Name"
+              placeholder="user name"
+              v-model="user.username"
+            >
+            </fg-input>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <fg-input
+              type="email"
+              label="E-mail"
+              placeholder="hello@localhost.com"
+              v-model="user.email"
+            >
+            </fg-input>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <fg-input
+              type="text"
+              label="Cell Phone"
+              placeholder="010-1234-5678"
+              v-model="user.cellphone"
+            >
+            </fg-input>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <fg-input
+              type="text"
+              label="Address"
+              placeholder="click!"
+              v-model="user.address"
+            >
+            </fg-input>
+          </div>
+        </div>
         <br />
         <div class="text-center">
-          <p-button type="info" round @click.native.prevent="checkLogin">
-            Login
+          <p-button type="info" round @click.native.prevent="checkJoin">
+            Join
           </p-button>
         </div>
         <br />

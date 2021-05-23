@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-sm-4">
         <card :title="apt.아파트" :subTitle="apt.법정동">
-          </br>
+          <br />
           <div slot="raw-content" class="table-responsive">
             <table class="table table-striped">
               <tbody>
@@ -82,36 +82,58 @@
           <div class="map">
             <div id="map">
               <ul id="category">
-              <li id="BK9" data-order="0" v-on:click="onClickCategory($event)">
-                <span class="category_bg bank"></span>
-                은행
-              </li>
-              <li id="MT1" data-order="1" v-on:click="onClickCategory($event)">
-                <span class="category_bg mart"></span>
-                마트
-              </li>
-              <li id="PM9" data-order="2" v-on:click="onClickCategory($event)">
-                <span class="category_bg pharmacy"></span>
-                약국
-              </li>
-              <li id="OL7" data-order="3" v-on:click="onClickCategory($event)">
-                <span class="category_bg oil"></span>
-                주유소
-              </li>
-              <li id="CE7" data-order="4" v-on:click="onClickCategory($event)">
-                <span class="category_bg cafe"></span>
-                카페
-              </li>
-              <li id="CS2" data-order="5" v-on:click="onClickCategory($event)">
-                <span class="category_bg store"></span>
-                편의점
-              </li>
-            </ul>
-
+                <li
+                  id="BK9"
+                  data-order="0"
+                  v-on:click="onClickCategory($event)"
+                >
+                  <span class="category_bg bank"></span>
+                  은행
+                </li>
+                <li
+                  id="MT1"
+                  data-order="1"
+                  v-on:click="onClickCategory($event)"
+                >
+                  <span class="category_bg mart"></span>
+                  마트
+                </li>
+                <li
+                  id="PM9"
+                  data-order="2"
+                  v-on:click="onClickCategory($event)"
+                >
+                  <span class="category_bg pharmacy"></span>
+                  약국
+                </li>
+                <li
+                  id="OL7"
+                  data-order="3"
+                  v-on:click="onClickCategory($event)"
+                >
+                  <span class="category_bg oil"></span>
+                  주유소
+                </li>
+                <li
+                  id="CE7"
+                  data-order="4"
+                  v-on:click="onClickCategory($event)"
+                >
+                  <span class="category_bg cafe"></span>
+                  카페
+                </li>
+                <li
+                  id="CS2"
+                  data-order="5"
+                  v-on:click="onClickCategory($event)"
+                >
+                  <span class="category_bg store"></span>
+                  편의점
+                </li>
+              </ul>
             </div>
-            
           </div>
-        </card> 
+        </card>
       </div>
     </div>
   </div>
@@ -159,18 +181,19 @@ export default {
   methods: {
     // 카테고리 검색을 요청하는 함수입니다
     searchPlaces() {
-
       if (!this.currCategory) {
         return;
       }
-      console.log("search "+this.currCategory);
+      console.log("search " + this.currCategory);
       // 커스텀 오버레이를 숨깁니다
       this.placeOverlay.setMap(null);
 
       // 지도에 표시되고 있는 마커를 제거합니다
       this.removeMarker();
 
-      this.ps.categorySearch(this.currCategory, this.placesSearchCB, { useMapBounds: true });
+      this.ps.categorySearch(this.currCategory, this.placesSearchCB, {
+        useMapBounds: true
+      });
     },
 
     initMap() {
@@ -205,7 +228,7 @@ export default {
               map: map,
               position: coords
             });
-            
+
             console.log("마커 생성 " + result[0].y + " " + result[0].x + " ");
 
             marker.setMap(map);
@@ -278,13 +301,11 @@ export default {
     displayPlaces(places) {
       // 몇번째 카테고리가 선택되어 있는지 얻어옵니다
       // 이 순서는 스프라이트 이미지에서의 위치를 계산하는데 사용됩니다
-      console.log("display "+this.currCategory+":: "+places);
+      console.log("display " + this.currCategory + ":: " + places);
       console.log(document.getElementById(this.currCategory));
       var order = document
         .getElementById(this.currCategory)
         .getAttribute("data-order");
-
-
 
       for (var i = 0; i < places.length; i++) {
         // 마커를 생성하고 지도에 표시합니다
@@ -296,10 +317,14 @@ export default {
         // 마커와 검색결과 항목을 클릭 했을 때
         // 장소정보를 표출하도록 클릭 이벤트를 등록합니다
         (function(marker, place) {
-          kakao.maps.event.addListener(marker, "click", function() {
-            this.displayPlaceInfo(place);
-          }.bind(this));
-        }.bind(this))(marker, places[i]);
+          kakao.maps.event.addListener(
+            marker,
+            "click",
+            function() {
+              this.displayPlaceInfo(place);
+            }.bind(this)
+          );
+        }.bind(this)(marker, places[i]));
       }
     },
 
@@ -324,7 +349,7 @@ export default {
         });
 
       marker.setMap(this.map); // 지도 위에 마커를 표출합니다
-      
+
       this.markers.push(marker); // 배열에 생성된 마커를 추가합니다
       return marker;
     },
@@ -397,10 +422,9 @@ export default {
 */
     // 카테고리를 클릭했을 때 호출되는 함수입니다
     onClickCategory(child) {
-      
       var id = child.currentTarget.id,
         className = child.className;
-      console.log("click! "+id+" "+className);
+      console.log("click! " + id + " " + className);
       this.placeOverlay.setMap(null);
 
       if (className === "on") {
