@@ -71,11 +71,11 @@ export default new Vuex.Store({
       commit("GET_USER_INFO", info);
     },
     logout({ commit }, userinfo) {
-      storage.setItem("userinfo", []);
+      localStorage.setItem("userinfo", []);
       commit("GET_USER_INFO", []);
     },
     init() {
-      this.userinfo = storage.getItem("userinfo");
+      this.userinfo = localStorage.getItem("userinfo");
     }
   },
   mounted() {

@@ -11,6 +11,7 @@ import Maps from "@/pages/Maps.vue";
 import Typography from "@/pages/Typography.vue";
 import TableList from "@/pages/TableList.vue";
 import Login from "@/pages/Login.vue";
+import Settings from "@/pages/Settings.vue";
 import Qna from "@/pages/Qna.vue";
 import AptInfo from "@/pages/Apt/AptInfo.vue";
 // import QnaView from "@/components/Qna/QnaView.vue";
@@ -55,6 +56,11 @@ const routes = [
         path: "login",
         name: "login",
         component: Login
+      },
+      {
+        path: "settings",
+        name: "settings",
+        component: Settings
       },
       {
         path: "apt",

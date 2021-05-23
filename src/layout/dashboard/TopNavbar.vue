@@ -14,11 +14,11 @@
         <span class="navbar-toggler-bar"></span>
       </button>
       <div class="collapse navbar-collapse">
-        <ul  v-if="userinfo.userid" class="navbar-nav ml-auto">
+        <ul v-if="userinfo.userid" class="navbar-nav ml-auto">
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="ti-user"></i>
-              <p>{{userinfo.userid}}</p>
+              <p>{{ userinfo.userid }}</p>
             </a>
           </li>
           <drop-down
@@ -34,12 +34,12 @@
             <a class="dropdown-item" href="#">Another notification</a>
           </drop-down>
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <router-link :to="{ name: 'settings' }" class="nav-link">
               <i class="ti-settings"></i>
               <p>
                 Settings
               </p>
-            </a>
+            </router-link>
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link">
@@ -48,14 +48,13 @@
             </a>
           </li>
         </ul>
-        <ul  v-if="!userinfo.userid" class="navbar-nav ml-auto">
+        <ul v-if="!userinfo.userid" class="navbar-nav ml-auto">
           <li class="nav-item">
             <router-link :to="{ name: 'login' }" class="nav-link">
               <i class="ti-lock"></i>
               <p>login</p>
             </router-link>
           </li>
-        </ul>
         </ul>
       </div>
     </div>
