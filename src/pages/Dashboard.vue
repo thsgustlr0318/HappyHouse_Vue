@@ -56,6 +56,14 @@
       </div>
 
       <div class="col-md-6 col-12">
+        <news-card
+          title="실시간 뉴스 정보"
+          sub-title="실시간 뉴스 정보를 확인해보세요!"
+        >
+        </news-card>
+      </div>
+
+      <div class="col-md-6 col-12">
         <chart-card
           title="Email Statistics"
           sub-title="Last campaign performance"
@@ -98,11 +106,13 @@ import { StatsCard, ChartCard } from "@/components/index";
 import Chartist from "chartist";
 import Maps from "@/pages/Maps.vue";
 import AptCard from "@/pages/Apt/AptCard.vue";
+import NewsCard from "@/components/Cards/NewsCard.vue";
 export default {
   components: {
     StatsCard,
     ChartCard,
     Maps,
+    NewsCard,
     AptCard
   },
   computed: {
