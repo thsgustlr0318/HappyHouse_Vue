@@ -58,6 +58,32 @@
                 v-model="item.content"
               >
               </textarea>
+
+              <!--파일-->
+              <input
+                id="customFile"
+                type="file"
+                multiple
+                @change="checkFileInfo"
+              />
+
+              <!-- 파일 출력 -->
+              <div v-for="(file, index) in files" :key="index">
+                <textarea
+                  rows="1"
+                  class="form-control border-input"
+                  v-model="file.originalfilename"
+                >
+                </textarea>
+                <!-- <img style="width: 120px;" :src="file.filepath" /> -->
+                <button v-on:click="deleteFile(file.fileno)">
+                  파일 삭제
+                </button>
+                <img
+                  :src="require('../../assets/files/qnafiles/' + file.filename)"
+                  width="50%"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -171,7 +197,8 @@ export default {
       answerContent: " ",
       regist: false,
       answerModify: -1,
-      printAnswerList: false
+      printAnswerList: false,
+      files: []
     };
   },
   props: {
@@ -179,6 +206,8 @@ export default {
     modify: true
   },
   created() {
+    console.log("created");
+    this.getFileList();
     if (this.item.chk == 1) {
       http.get("qna/answer/" + `${this.item.qno}`).then(({ data }) => {
         console.log(data);
@@ -187,6 +216,8 @@ export default {
         // alert(msg);
       });
     }
+    console.log("created");
+    this.getFileList();
   },
   methods: {
     updateAnswerList() {
@@ -283,6 +314,56 @@ export default {
             this.updateAnswerList();
           });
       }
+    },
+    async checkFileInfo(e) {
+      const formData = new FormData();
+      this.files = e.target.files;
+      console.log(this.files);
+      for (var index = 0; index < this.files.length; index++) {
+        formData.append("files", this.files[index]);
+      }
+      console.log(this.files);
+      http
+        .post("qnafile/upload/" + `${this.item.qno}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
+        .then(({ data }) => {
+          console.log("파일 올리기");
+          console.log(data);
+          this.getFileList();
+        });
+    },
+    getFileList() {
+      http.get("qnafile/getFileList/" + `${this.item.qno}`).then(({ data }) => {
+        console.log("44");
+        this.files = data;
+        // this.downloadFile(data.fileno);
+        console.log(data);
+      });
+    },
+    async deleteFile(fileno) {
+      console.log("파일 삭제");
+      await http.delete("qnafile/deleteFile/" + fileno).then(({ data }) => {
+        let msg = "삭제 처리시 문제가 발생했습니다.";
+        if (data === "success") {
+          msg = "삭제가 완료되었습니다.";
+        }
+        alert(msg);
+        this.getFileList();
+      });
+    },
+    downloadFile(fileno) {
+      http.get("qnafile/downloadFile/" + fileno, {}).then(({ data }) => {
+        // console.log("@/assets/files/" + data.filename);
+        var path = "@/assets/files/" + data.filename;
+        console.log(path);
+        // this.images = data;\
+        // this.imageInfo = data.filename;
+        // this.imageInfo = "@/assets/files/".toString() + data.filename;
+        return path;
+      });
     }
   }
 };
