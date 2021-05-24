@@ -79,7 +79,12 @@
                 <button v-on:click="deleteFile(file.fileno)">
                   파일 삭제
                 </button>
-                <img :src="require('../../assets/files/' + file.filename)" />
+                <img
+                  :src="
+                    require('../../assets/files/noticefiles/' + file.filename)
+                  "
+                  width="50%"
+                />
                 <!-- <img
                   :src="
                     'C:\\Users\\thsgu\\Documents\\github\\v3\\HappyHouse_Vue\\src\\assets\\files\\' +
@@ -143,7 +148,6 @@ export default {
     modify: true
   },
   created() {
-    console.log(this.$router);
     this.getFileList();
   },
   methods: {
