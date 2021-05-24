@@ -79,13 +79,13 @@
                 <button v-on:click="deleteFile(file.fileno)">
                   파일 삭제
                 </button>
-                <!-- <img :src="`@/assets/files/` + file.filename" /> -->
-                <img
+                <img :src="require('../../assets/files/' + file.filename)" />
+                <!-- <img
                   :src="
                     'C:\\Users\\thsgu\\Documents\\github\\v3\\HappyHouse_Vue\\src\\assets\\files\\' +
                       file.filename
                   "
-                />
+                /> -->
                 <!-- <img src="C:\Users\thsgu\Documents\github\v3\HappyHouse_Vue\src\assets\files\ " alt=""> -->
                 <!-- <img src="@/assets/files/{{file.filename}}" /> -->
                 <!-- <img src="" v-bind="downloadFile(file.fileno)" /> -->
