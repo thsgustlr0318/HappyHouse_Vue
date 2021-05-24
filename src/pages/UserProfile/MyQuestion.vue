@@ -1,37 +1,42 @@
 <template>
   <div>
-    여긴 수정해야대ㅠㅠ (내가 쓴 질문 목록 올릴것)
-    <div class="col-12">
-      <card class="card-plain">
-        <div class="table-full-width table-responsive">
-          <notification-table
-            type="hover"
-            :title="table2.title"
-            :sub-title="table2.subTitle"
-            :data="data"
-            :columns="table2.columns"
-          >
-          </notification-table>
-        </div>
-      </card>
-    </div>
+    <card title="내가 쓴 글">
+      <hr />
+      <div v-if="qnas.length" slot="raw-content" class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <th>제목</th>
+            <th>답변 여부</th>
+          </thead>
+          <tbody>
+            <tr v-for="qna in qnas" :key="qna.no" v-on:click="movePage(qna)">
+              <slot :row="qna">
+                <td>{{ qna.subject }}</td>
+                <td>{{ qna.chk == 1 ? "답변완료" : "답변미완료" }}</td>
+              </slot>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div v-if="!qnas.length" style="margin-bottom:20px">
+        작성한 글이 없습니다.
+      </div>
+    </card>
+    <br />
   </div>
 </template>
 
 <script>
 // import NotificationTemplate from "./Notifications/NotificationTemplate";
-import NotificationTable from "@/components/Notification/NotificationTable.vue";
+import { mapState } from "vuex";
 import http from "@/util/http-common";
 
 const tableColumns = ["no", "제목", "글쓴이", "조회수"];
 
 export default {
-  components: {
-    NotificationTable
-  },
   data() {
     return {
-      data: [],
+      qnas: [],
       type: ["", "info", "success", "warning", "danger"],
       notifications: {
         topCenter: false
@@ -48,6 +53,9 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapState(["userinfo"])
+  },
   methods: {
     notifyVue(verticalAlign, horizontalAlign) {
       const color = Math.floor(Math.random() * 4 + 1);
@@ -61,14 +69,18 @@ export default {
     },
     goRegisterNotificationPage() {
       this.$router.push({ name: "notification-register" });
+    },
+    movePage(item) {
+      console.log(item);
+      this.$router.push({ name: "qna-view", params: { item: item } });
     }
   },
   created() {
-    http.get("/notice/list", {}).then(({ data }) => {
-      console.log("공지 받아오기");
+    http.get("/qna/question/" + this.userinfo.userid, {}).then(({ data }) => {
+      console.log(data);
       // console.log(data);
       // console.log(data);
-      this.data = data;
+      this.qnas = data;
     });
   }
 };

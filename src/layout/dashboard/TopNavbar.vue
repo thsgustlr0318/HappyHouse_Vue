@@ -42,10 +42,14 @@
             </router-link>
           </li>
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <router-link
+              :to="{ name: 'dashboard' }"
+              class="nav-link"
+              @click.native.prevent="logout"
+            >
               <i class="ti-unlock"></i>
               <p>logout</p>
-            </a>
+            </router-link>
           </li>
         </ul>
         <ul v-if="!userinfo.userid" class="navbar-nav ml-auto">
@@ -67,7 +71,7 @@
   </nav>
 </template>
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 export default {
   computed: {
     ...mapState(["userinfo"]),
@@ -82,6 +86,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions(["logout"]),
     capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
