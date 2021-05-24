@@ -2,6 +2,12 @@
   <card class="card" :title="user.userid + ' Page'">
     <div>
       <form @submit.prevent>
+        <div v-if="info.data" :class="'alert ' + info.color">
+          <button type="button" aria-hidden="true" class="close">×</button>
+          <i class="ti-check">
+            <span> {{ info.data }} </span>
+          </i>
+        </div>
         <div class="row">
           <div class="col-md-12">
             <fg-input
@@ -13,14 +19,13 @@
             </fg-input>
           </div>
         </div>
-
         <div class="row">
           <div class="col-md-6">
             <fg-input
               type="password"
               label="Password"
               placeholder="*********"
-              v-model="user.password"
+              v-model="user.userpwd"
             >
             </fg-input>
           </div>
@@ -29,7 +34,7 @@
               type="password"
               label="Confirm Password"
               placeholder="*********"
-              v-model="user.password"
+              v-model="user.userconfirmpwd"
             >
             </fg-input>
           </div>
@@ -75,6 +80,15 @@
           <p-button type="info" round @click.native.prevent="updateProfile">
             Update
           </p-button>
+
+          <p-button
+            type="danger"
+            style="margin-left: 5px;"
+            round
+            @click.native.prevent="deleteProfile"
+          >
+            Delete
+          </p-button>
         </div>
         <div class="clearfix"></div>
       </form>
@@ -82,7 +96,7 @@
   </card>
 </template>
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 import http from "@/util/http-common";
 export default {
   computed: {
@@ -97,16 +111,22 @@ export default {
         userid: "",
         username: "",
         userpwd: "",
+        userconfirmpwd: "",
         email: "",
         address: "",
         cellphone: ""
+      },
+      info: {
+        data: "",
+        color: ""
       }
     };
   },
   methods: {
+    ...mapActions(["logout"]),
     initInfo() {
       http
-        .post("/user/info/" + this.userinfo.userid, {
+        .post("/user/" + this.userinfo.userid, {
           auth: this.userinfo.auth
         })
         .then(res => {
@@ -125,7 +145,46 @@ export default {
         });
     },
     updateProfile() {
-      alert("Your data: " + JSON.stringify(this.user));
+      http
+        .put("/user/", {
+          userid: this.user.userid,
+          username: this.user.username,
+          userpwd: this.user.userpwd,
+          email: this.user.email,
+          address: this.user.address,
+          cellphone: this.user.cellphone
+        })
+        .then(res => {
+          if (res.status == 200) {
+            this.info.data = "회원정보 수정 성공!";
+            this.info.color = "alert-success";
+          } else {
+            this.info.data = "회원정보 수정 실패!";
+            this.info.color = "alert-danger";
+          }
+        })
+        .catch(e => {
+          alert("로그인 후 이용해주세요");
+          window.location = "/login";
+        });
+    },
+    deleteProfile() {
+      http
+        .delete("/user/" + this.user.userid, {})
+        .then(res => {
+          if (res.status == 200) {
+            alert("회원정보가 삭제되었습니다.");
+            this.logout(user);
+            window.location = "/login";
+          } else {
+            this.info.data = "회원정보 수정 실패!";
+            this.info.color = "alert-danger";
+          }
+        })
+        .catch(e => {
+          alert("로그인 후 이용해주세요");
+          window.location = "/login";
+        });
     }
   }
 };
