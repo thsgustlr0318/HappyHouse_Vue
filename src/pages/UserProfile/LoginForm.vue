@@ -90,17 +90,17 @@ export default {
             this.info.data = "로그인 성공!";
             this.info.color = "alert-success";
             console.log("sdfsfs3" + res.data);
-            let userinfo = {
+            this.login({
               userid: this.user.userid,
               auth: res.data
-            };
-            this.login(userinfo);
+            });
           } else {
             this.info.data = "아이디/비밀번호를 다시 확인해주세요.";
             this.info.color = "alert-danger";
           }
         })
         .catch(e => {
+          console.log(e);
           this.info.data = "서버 에러";
           this.info.color = "alert-warning";
         });

@@ -14,7 +14,7 @@
         <span class="navbar-toggler-bar"></span>
       </button>
       <div class="collapse navbar-collapse">
-        <ul v-if="userinfo.userid" class="navbar-nav ml-auto">
+        <ul v-if="userinfo" class="navbar-nav ml-auto">
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="ti-user"></i>
@@ -52,7 +52,7 @@
             </router-link>
           </li>
         </ul>
-        <ul v-if="!userinfo.userid" class="navbar-nav ml-auto">
+        <ul v-if="!userinfo" class="navbar-nav ml-auto">
           <li class="nav-item">
             <router-link :to="{ name: 'login' }" class="nav-link">
               <i class="ti-lock"></i>

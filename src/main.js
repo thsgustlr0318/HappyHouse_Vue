@@ -23,9 +23,14 @@ import "vue-notifyjs/themes/default.css";
 
 Vue.use(PaperDashboard);
 
+Vue.config.productionTip = false
+
 /* eslint-disable no-new */
 new Vue({
   router,
   store,
+  beforeCreate() {
+    this.$store.dispatch('initSession');
+  },
   render: h => h(App)
 }).$mount("#app");

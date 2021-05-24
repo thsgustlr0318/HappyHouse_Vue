@@ -67,19 +67,19 @@ export default new Vuex.Store({
       commit("SELECT_APT", apt);
     },
     login({ commit }, info) {
-      //storage.setItem("userinfo", userinfo);
+      localStorage.setItem("userinfo", JSON.stringify(info));
       commit("GET_USER_INFO", info);
     },
     logout({ commit }, userinfo) {
-      localStorage.setItem("userinfo", []);
+      localStorage.setItem("userinfo", "");
       commit("GET_USER_INFO", []);
     },
-    init() {
-      this.userinfo = localStorage.getItem("userinfo");
+    initSession({ commit }) {
+      commit("GET_USER_INFO", JSON.parse(localStorage.getItem("userinfo")));
     }
   },
   mounted() {
-    //this.init();
+    this.initSession();
   },
   modules: {}
   // plugins: [createPersistedState()],
