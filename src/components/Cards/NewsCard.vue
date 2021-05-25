@@ -51,6 +51,25 @@ export default {
     subTitle: {
       type: String,
       default: ""
+    },
+    chartType: {
+      type: String,
+      default: "Line" // Line | Pie | Bar
+    },
+    chartOptions: {
+      type: Object,
+      default: () => {
+        return {};
+      }
+    },
+    chartData: {
+      type: Object,
+      default: () => {
+        return {
+          labels: [],
+          series: []
+        };
+      }
     }
   },
   data() {
@@ -73,7 +92,6 @@ export default {
      */
   },
   mounted() {
-    console.log("this is called");
     http
       .get("https://dapi.kakao.com/v2/search/web", {
         params: { query: "부동산 뉴스", size: 7, page: 1, sort: "recency" },

@@ -14,6 +14,7 @@ import Join from "@/pages/Join.vue";
 import Login from "@/pages/Login.vue";
 import Settings from "@/pages/Settings.vue";
 import Qna from "@/pages/Qna.vue";
+import UserLocation from "@/pages/UserLocation.vue";
 import AptInfo from "@/pages/Apt/AptInfo.vue";
 // import QnaView from "@/components/Qna/QnaView.vue";
 
@@ -72,6 +73,11 @@ const routes = [
         path: "apt",
         name: "apt-info",
         component: AptInfo
+      },
+      {
+        path: "location",
+        name: "location",
+        component: UserLocation
       },
       {
         path: "notifications",

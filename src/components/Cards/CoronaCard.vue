@@ -14,6 +14,13 @@
     </template>
     <div>
       <div :id="chartId" class="ct-chart"></div>
+      <chartist
+        ratio="ct-major-second"
+        type="Line"
+        :data="chartData"
+        :options="chartOptions"
+      >
+      </chartist>
       <div class="footer">
         <div class="chart-legend">
           <slot name="legend"></slot>
@@ -29,8 +36,9 @@
 </template>
 <script>
 import Card from "./Card.vue";
+import http from "@/util/http-common";
 export default {
-  name: "chart-card",
+  name: "corona-card",
   components: {
     Card
   },
@@ -100,6 +108,68 @@ export default {
         this.initChart(ChartistLib);
       });
     });
+
+    http
+      .get("https://api.corona-19.kr/korea/country/new/", {
+        params: { serviceKey: "XTNfSm3LJEBhprI4ycwbM9Qx2qkW8C6Hz" }
+      })
+      .then(res => {
+        let data = res.data;
+        console.log(data);
+        console.log(data["seoul"]);
+        for (let d in data) {
+          console.log("why " + data[d]);
+          if (data[d].countryName == "서울") {
+            console.log(data[d].totalCase.replaceAll(",", ""));
+            console.log(data[d].recovered.replaceAll(",", ""));
+            console.log(data[d].death.replaceAll(",", ""));
+          }
+        }
+      })
+      .catch(e => {
+        console.log();
+      });
+
+    var data = {
+      labels: [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec"
+      ],
+      series: [
+        [5, 4, 3, 7, 5, 10, 3, 4, 8, 10, 6, 8],
+        [3, 2, 9, 5, 4, 6, 4, 6, 7, 8, 7, 4]
+      ]
+    };
+
+    var options = {
+      seriesBarDistance: 10
+    };
+
+    var responsiveOptions = [
+      [
+        "screen and (max-width: 640px)",
+        {
+          seriesBarDistance: 5,
+          axisX: {
+            labelInterpolationFnc: function(value) {
+              return value[0];
+            }
+          }
+        }
+      ]
+    ];
+
+    new Chartist.Bar("#barChart", data, options, responsiveOptions);
   }
 };
 </script>

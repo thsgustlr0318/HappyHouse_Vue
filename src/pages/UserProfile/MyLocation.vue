@@ -1,23 +1,20 @@
 <template>
-  <card class="card" :title="title">
+  <card class="card" :title="title" style="padding-bottom:15px">
+    <hr />
     <div>
-      <ul class="list-unstyled team-members">
-        <li>
-          <div class="row" v-for="menu in menus" :key="menu.name">
-            <div class="col-9">
-              {{ menu.name }}
-              <span :class="getStatusClass(menu.status)"> </span>
-            </div>
-
-            <div class="col-3">
-              <p-button type="success" outline icon>
-                <i class="fa fa-map"></i>
-              </p-button>
-            </div>
-            <br />
-          </div>
-        </li>
-      </ul>
+      <router-link :to="{ name: 'location' }" class="nav-link">
+        <p-button style="margin-right: 10px" type="danger" outline icon>
+          <i class="fa fa-shopping-cart"></i>
+        </p-button>
+        상가 정보
+      </router-link>
+    </div>
+    <hr />
+    <div>
+      <p-button style="margin-right: 10px" type="primary" outline icon>
+        <i class="fa fa-home"></i>
+      </p-button>
+      아파트 거래 정보
     </div>
   </card>
 </template>
