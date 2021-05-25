@@ -5,8 +5,52 @@
         <div class="row">
           <div class="col-md-12">
             <div class="form-group">
-              <label>내용</label>
+              <!-- <label>내용</label> -->
+              <!--파일 입력-->
+              <b-form-file
+                v-if="this.modify"
+                type="file"
+                multiple
+                @change="checkFileInfo"
+                placeholder="파일을 선택하세요"
+                drop-placeholder="Drop file here..."
+              ></b-form-file>
+
+              <!-- 파일 출력 -->
+              <div v-if="files.length != 0">
+                <b-carousel
+                  id="carousel-1"
+                  v-model="slide"
+                  :interval="5000"
+                  controls
+                  indicators
+                  background="#ababab"
+                  img-width="1024"
+                  img-height="480"
+                  style="text-shadow: 1px 1px 2px #333;"
+                  @sliding-start="onSlideStart"
+                  @sliding-end="onSlideEnd"
+                >
+                  <div v-for="(file, index) in files" :key="index">
+                    <b-carousel-slide
+                      :img-src="
+                        require('../../assets/files/noticefiles/' +
+                          file.filename)
+                      "
+                    >
+                      <b-button
+                        v-on:click="deleteFile(file.fileno)"
+                        v-if="modify"
+                      >
+                        파일 삭제
+                      </b-button>
+                    </b-carousel-slide>
+                  </div>
+                </b-carousel>
+              </div>
+              <!-- 공지 내용 -->
               <textarea
+                style="background-color:transparent"
                 v-if="!this.modify"
                 rows="5"
                 class="form-control border-input"
@@ -23,37 +67,6 @@
                 v-model="item.content"
               >
               </textarea>
-
-              <!--파일-->
-              <input
-                id="customFile"
-                v-if="this.modify"
-                type="file"
-                multiple
-                @change="checkFileInfo"
-              />
-
-              <!-- 파일 출력 -->
-              <div v-for="(file, index) in files" :key="index" class="col-md-6">
-                <textarea
-                  rows="1"
-                  class="form-control border-input"
-                  v-model="file.originalfilename"
-                >
-                </textarea>
-                <!-- <img style="width: 120px;" :src="file.filepath" /> -->
-
-                <img
-                  :src="
-                    require('../../assets/files/noticefiles/' + file.filename)
-                  "
-                  width="100%"
-                />
-                <button v-on:click="deleteFile(file.fileno)" v-if="modify">
-                  파일 삭제
-                </button>
-                <br /><br />
-              </div>
             </div>
           </div>
         </div>
@@ -88,8 +101,9 @@ export default {
     return {
       files: [],
       imageInfo: {},
-      modify: false
-      // item: []
+      modify: false,
+      slide: 0,
+      sliding: null
     };
   },
   props: {
@@ -99,6 +113,12 @@ export default {
     this.getFileList();
   },
   methods: {
+    onSlideStart(slide) {
+      this.sliding = true;
+    },
+    onSlideEnd(slide) {
+      this.sliding = false;
+    },
     changeMode() {
       this.modify = !this.modify;
     },
