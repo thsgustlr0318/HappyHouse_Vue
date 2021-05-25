@@ -72,18 +72,18 @@
         </div>
         <div class="text-center">
           <span v-if="!this.modify" v-on:click="changeMode()">
-            <p-button type="info" round>
-              수정
-            </p-button>
-          </span>
-          <span v-if="this.modify" v-on:click="deleteNotice()">
-            <p-button type="info" round>
-              삭제
+            <p-button type="secondary" round>
+              MODIFY
             </p-button>
           </span>
           <span v-if="this.modify" v-on:click="modifyNotice()">
-            <p-button type="info" round>
-              수정 완료
+            <p-button type="secondary" round>
+              COMPLETE
+            </p-button>
+          </span>
+          <span v-if="this.modify" v-on:click="deleteNotice()">
+            <p-button type="danger" round style="margin-left: 5px;">
+              DELETE
             </p-button>
           </span>
         </div>
