@@ -40,6 +40,7 @@
             </div>
           </div>
         </div>
+        <input type="file" multiple ref="fileitem" />
         <div class="text-center" v-on:click="registerNotification()">
           <p-button round type="info">
             입력
@@ -58,7 +59,9 @@ export default {
     return {
       userid: "",
       subject: "",
-      content: ""
+      content: "",
+      no: "",
+      fileInfos: []
     };
   },
   methods: {
@@ -74,7 +77,37 @@ export default {
           if (data === "success") {
             msg = "등록이 완료되었습니다.";
           }
-          alert(msg);
+          this.registerNoticeFile();
+        });
+    },
+    async registerNoticeFile() {
+      http.get("notice/getNoticeNo").then(newNo => {
+        console.log("dada");
+        console.log(newNo);
+        console.log(newNo.data.no);
+        this.checkFileInfo(newNo.data.no);
+      });
+    },
+    async checkFileInfo(no) {
+      console.log(no);
+      console.log(this.$refs.fileitem.files);
+      const formData = new FormData();
+      this.fileInfos = this.$refs.fileitem.files;
+      // console.log(this.fileInfos);
+      for (var index = 0; index < this.fileInfos.length; index++) {
+        formData.append("files", this.fileInfos[index]);
+      }
+      // console.log(this.fileInfos);
+      http
+        .post("file/upload/" + no, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
+        .then(({ data }) => {
+          console.log("파일 올리기");
+          console.log(data);
+          // this.getFileList();
           this.moveNoticeList();
         });
     },

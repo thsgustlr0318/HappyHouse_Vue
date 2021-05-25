@@ -20,17 +20,23 @@ import store from "./store";
 
 import PaperDashboard from "./plugins/paperDashboard";
 import "vue-notifyjs/themes/default.css";
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-vue/dist/bootstrap-vue.css";
+
+import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
+Vue.use(BootstrapVue);
+Vue.use(IconsPlugin);
 
 Vue.use(PaperDashboard);
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
 new Vue({
   router,
   store,
   beforeCreate() {
-    this.$store.dispatch('initSession');
+    this.$store.dispatch("initSession");
   },
   render: h => h(App)
 }).$mount("#app");
