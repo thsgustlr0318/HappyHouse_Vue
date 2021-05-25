@@ -40,11 +40,20 @@
             </div>
           </div>
         </div>
-        <input type="file" multiple ref="fileitem" />
+        <!-- <input type="file" multiple ref="fileitem" /> -->
+        <b-form-file
+          type="file"
+          multiple
+          ref="fileitem"
+          @change="checkFileInfo"
+          placeholder="파일을 선택하세요"
+          drop-placeholder="Drop file here..."
+        ></b-form-file>
         <div class="text-center" v-on:click="registerNotification()">
-          <p-button round type="info">
+          <br />
+          <b-button round type="info">
             입력
-          </p-button>
+          </b-button>
         </div>
         <div class="clearfix"></div>
       </form>
