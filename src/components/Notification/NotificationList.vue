@@ -16,7 +16,8 @@
                 variant="outline-secondary"
               >
                 <b-row>
-                  <b-col md="9" style="color:black">{{ item.subject }}</b-col>
+                  <b-col md="1" style="color:black">{{ item.no }}</b-col>
+                  <b-col md="8" style="color:black">{{ item.subject }}</b-col>
                   <b-col md="3" style="color:black">{{ item.time }}</b-col>
                 </b-row>
               </b-button>
@@ -39,14 +40,11 @@
         </div>
       </div>
     </card>
-    <b-row>
-      <b-col md="8"></b-col>
-      <b-col md="3" v-on:click="goRegisterNotificationPage()"
-        ><b-button>
-          <i class="ti-comment-alt" style="font-size:150%"> 공지사항 작성</i>
-        </b-button></b-col
-      >
-    </b-row>
+    <div class="col-sm-11 text-right" style="margin-bottom:20px">
+      <b-button v-on:click="goRegisterNotificationPage()" round>
+        <i class="ti-comment-alt"> WRITE</i>
+      </b-button>
+    </div>
   </div>
 </template>
 
