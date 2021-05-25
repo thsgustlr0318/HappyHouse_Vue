@@ -40,7 +40,7 @@ export default {
       chartId: "EnvChart",
       footerText: "test",
       title: "환경 정보",
-      subTitle: "실시간 대기 환경 현황",
+      subTitle: "실시간 대기 환경 현황 ",
       chartData: {
         labels: [
           "미세먼지",
@@ -118,6 +118,7 @@ export default {
             this.chartData.series[0].push(data[d].SULFUROUS * 100);
             this.chartData.series[0].push(data[d].CARBON * 100);
             this.chartData.series[0].push(data[d].OZONE * 100);
+            this.subTitle += " - " + data[d].GRADE;
           }
         }
         for (let i = 0; i < 6; i++) {

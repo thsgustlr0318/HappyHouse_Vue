@@ -3,7 +3,7 @@
     <!-- map -->
     <div class="row">
       <div class="col-12">
-        <maps name=""></maps>
+        <store-card></store-card>
       </div>
     </div>
 
@@ -32,9 +32,7 @@
           :chart-data="activityChart.data"
           :chart-options="activityChart.options"
         >
-          <span slot="footer">
-            <i class="ti-check"></i> Data information certified
-          </span>
+          <span slot="footer"> <i class="ti-check"></i> 단위:㎍/㎥ </span>
           <div slot="legend">
             <i class="fa fa-circle text-info"></i> 우리 동네
             <i class="fa fa-circle text-warning"></i> 서울시 평균
@@ -53,6 +51,7 @@ import AptCard from "@/pages/Apt/AptCard.vue";
 import NewsCard from "@/components/Cards/NewsCard.vue";
 import CoronaCard from "@/components/Cards/CoronaCard.vue";
 import EnvironmentCard from "@/components/Cards/EnvironmentCard.vue";
+import StoreCard from "@/components/Cards/StoreCard.vue";
 export default {
   components: {
     StatsCard,
@@ -61,7 +60,8 @@ export default {
     NewsCard,
     AptCard,
     CoronaCard,
-    EnvironmentCard
+    EnvironmentCard,
+    StoreCard
   },
   computed: {
     ...mapState(["apts"])
