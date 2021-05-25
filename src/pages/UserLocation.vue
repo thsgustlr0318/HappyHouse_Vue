@@ -26,7 +26,7 @@
       </div>
 
       <div class="col-md-6 col-12">
-        <chart-card
+        <environment-card
           title="2015 Sales"
           sub-title="All products including Taxes"
           :chart-data="activityChart.data"
@@ -36,10 +36,10 @@
             <i class="ti-check"></i> Data information certified
           </span>
           <div slot="legend">
-            <i class="fa fa-circle text-info"></i> Tesla Model S
-            <i class="fa fa-circle text-warning"></i> BMW 5 Series
+            <i class="fa fa-circle text-info"></i> 우리 동네
+            <i class="fa fa-circle text-warning"></i> 서울시 평균
           </div>
-        </chart-card>
+        </environment-card>
       </div>
     </div>
   </div>
@@ -52,6 +52,7 @@ import Maps from "@/pages/Maps.vue";
 import AptCard from "@/pages/Apt/AptCard.vue";
 import NewsCard from "@/components/Cards/NewsCard.vue";
 import CoronaCard from "@/components/Cards/CoronaCard.vue";
+import EnvironmentCard from "@/components/Cards/EnvironmentCard.vue";
 export default {
   components: {
     StatsCard,
@@ -59,7 +60,8 @@ export default {
     Maps,
     NewsCard,
     AptCard,
-    CoronaCard
+    CoronaCard,
+    EnvironmentCard
   },
   computed: {
     ...mapState(["apts"])

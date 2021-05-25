@@ -37,7 +37,7 @@ export default {
   },
   data() {
     return {
-      chartId: "line",
+      chartId: "Bar",
       footerText: "test",
       title: "코로나 확진 환자 수",
       subTitle: "우리 시 확진 환자를 확인하세요",
@@ -78,10 +78,7 @@ export default {
       })
       .then(res => {
         let data = res.data;
-        console.log(data);
-        console.log(data["seoul"]);
         for (let d in data) {
-          console.log("why " + data[d]);
           if (data[d].countryName == "서울") {
             this.chartData.series.push(data[d].totalCase.replaceAll(",", ""));
             this.chartData.series.push(data[d].recovered.replaceAll(",", ""));
@@ -89,12 +86,8 @@ export default {
             this.chartData.labels.push(data[d].totalCase + "명");
             this.chartData.labels.push(data[d].recovered + "명");
             this.chartData.labels.push(data[d].death + "명");
-            console.log(data[d].totalCase.replaceAll(",", ""));
-            console.log(data[d].recovered.replaceAll(",", ""));
-            console.log(data[d].death.replaceAll(",", ""));
           }
         }
-        console.log("sfsdfs" + this.chartData.labels[0]);
         this.updateChartId();
         import("chartist").then(Chartist => {
           let ChartistLib = Chartist.default || Chartist;
