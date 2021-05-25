@@ -1,42 +1,7 @@
 <template>
-  <card class="card" title="공지 작성">
+  <card class="card">
     <div>
       <form>
-        <div class="row">
-          <div class="col-md-12">
-            <fg-input
-              v-if="!this.modify"
-              type="text"
-              label="제목"
-              placeholder="공지 제목을 입력하세요."
-              disabled="true"
-              v-model="item.subject"
-            >
-            </fg-input>
-            <fg-input
-              v-else
-              type="text"
-              label="제목"
-              placeholder="공지 제목을 입력하세요."
-              v-model="item.subject"
-            >
-            </fg-input>
-          </div>
-        </div>
-        <!-- 유저 아이디 로그인 시 자동 입력 -->
-        <div class="row">
-          <div class="col-md-12">
-            <fg-input
-              type="text"
-              label="userid"
-              placeholder="공지 제목을 입력하세요."
-              disabled="true"
-              v-model="item.userid"
-            >
-            </fg-input>
-          </div>
-        </div>
-
         <div class="row">
           <div class="col-md-12">
             <div class="form-group">
@@ -62,13 +27,14 @@
               <!--파일-->
               <input
                 id="customFile"
+                v-if="this.modify"
                 type="file"
                 multiple
                 @change="checkFileInfo"
               />
 
               <!-- 파일 출력 -->
-              <div v-for="(file, index) in files" :key="index">
+              <div v-for="(file, index) in files" :key="index" class="col-md-6">
                 <textarea
                   rows="1"
                   class="form-control border-input"
@@ -76,42 +42,22 @@
                 >
                 </textarea>
                 <!-- <img style="width: 120px;" :src="file.filepath" /> -->
-                <button v-on:click="deleteFile(file.fileno)">
-                  파일 삭제
-                </button>
+
                 <img
                   :src="
                     require('../../assets/files/noticefiles/' + file.filename)
                   "
-                  width="50%"
+                  width="100%"
                 />
-                <!-- <img
-                  :src="
-                    'C:\\Users\\thsgu\\Documents\\github\\v3\\HappyHouse_Vue\\src\\assets\\files\\' +
-                      file.filename
-                  "
-                /> -->
-                <!-- <img src="C:\Users\thsgu\Documents\github\v3\HappyHouse_Vue\src\assets\files\ " alt=""> -->
-                <!-- <img src="@/assets/files/{{file.filename}}" /> -->
-                <!-- <img src="" v-bind="downloadFile(file.fileno)" /> -->
-                <!-- <img src="../assets/3a7e43f8-cbd6-4145-a666-dcfc55b115ad.jpg" /> -->
-                <!-- <button v-on:click="downloadFile(file.fileno)">
-                  파일 다운
-                </button> -->
-
+                <button v-on:click="deleteFile(file.fileno)" v-if="modify">
+                  파일 삭제
+                </button>
                 <br /><br />
               </div>
             </div>
           </div>
         </div>
         <div class="text-center">
-          <span>
-            <router-link to="/notifications"
-              ><p-button round type="info">
-                <div>목록</div>
-              </p-button></router-link
-            >
-          </span>
           <span v-if="!this.modify" v-on:click="changeMode()">
             <p-button type="info" round>
               수정
@@ -124,7 +70,7 @@
           </span>
           <span v-if="this.modify" v-on:click="modifyNotice()">
             <p-button type="info" round>
-              입력
+              수정 완료
             </p-button>
           </span>
         </div>
@@ -136,16 +82,18 @@
 
 <script>
 import http from "@/util/http-common";
+const tableColumns = ["no", "제목", "글쓴이", "조회수"];
 export default {
   data() {
     return {
       files: [],
-      imageInfo: {}
+      imageInfo: {},
+      modify: false
+      // item: []
     };
   },
   props: {
-    item: {},
-    modify: true
+    item: {}
   },
   created() {
     this.getFileList();
@@ -180,7 +128,7 @@ export default {
             msg = "삭제가 완료되었습니다.";
           }
           alert(msg);
-          this.$router.push("/notifications");
+          this.$emit("childs-event");
         });
       }
     },
@@ -231,6 +179,9 @@ export default {
         // this.imageInfo = "@/assets/files/".toString() + data.filename;
         return path;
       });
+    },
+    goRegisterNotificationPage() {
+      this.$router.push({ name: "notification-register" });
     }
   }
 };
