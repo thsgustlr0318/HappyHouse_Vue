@@ -36,6 +36,12 @@
 import { mapState } from "vuex";
 export default {
   name: "StoreCard",
+  props: {
+    address: {
+      type: String,
+      default: "서울 강남구 역삼동"
+    }
+  },
   data() {
     return {
       markers: [],
@@ -73,7 +79,6 @@ export default {
       if (!this.currCategory) {
         return;
       }
-      console.log("search " + this.currCategory);
       // 커스텀 오버레이를 숨깁니다
       this.placeOverlay.setMap(null);
 
@@ -92,9 +97,8 @@ export default {
       this.markers = []; // 마커를 담을 배열입니다
       this.currCategory = ""; // 현재 선택된 카테고리를 가지고 있을 변수입니다
 
-      let address = "서울시 동대문구 황물로15길 25";
+      let address = this.address.replace(/\([^\]]*\)/g, "");
       //test = test.replaceAll("\(.*\)|\s-\s.*", "");
-      console.log("To find " + address);
       let mapContainer = document.getElementById("map"); // 지도를 표시할 div
       var geocoder = new kakao.maps.services.Geocoder();
       let coords = new kakao.maps.LatLng(37.566826, 126.9786567);
@@ -105,25 +109,20 @@ export default {
           // 정상적으로 검색이 완료됐으면
           if (status === kakao.maps.services.Status.OK) {
             coords = await new kakao.maps.LatLng(result[0].y, result[0].x);
-            console.log("주소 변경 " + result[0].y + " " + result[0].x);
             let mapOption = {
               center: coords, // 지도의 중심좌표
               level: 5 // 지도의 확대 레벨
             };
             // 지도를 생성합니다
-            console.log("지도 생성 " + coords);
             map = new kakao.maps.Map(mapContainer, mapOption);
             var marker = new kakao.maps.Marker({
               map: map,
               position: coords
             });
 
-            console.log("마커 생성 " + result[0].y + " " + result[0].x + " ");
-
             marker.setMap(map);
             //map.panTo(coords);
             this.ps = new kakao.maps.services.Places(map);
-            console.log("이벤트 등록");
             // 지도에 idle 이벤트를 등록합니다
             kakao.maps.event.addListener(map, "idle", this.searchPlaces);
 

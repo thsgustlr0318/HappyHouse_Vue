@@ -35,12 +35,18 @@ export default {
   components: {
     Card
   },
+  props: {
+    sido: {
+      type: String,
+      default: "서울"
+    }
+  },
   data() {
     return {
       chartId: "Bar",
       footerText: "test",
       title: "코로나 확진 환자 수",
-      subTitle: "우리 시 확진 환자를 확인하세요",
+      subTitle: this.sido + "시 확진 환자를 확인하세요",
       chartOptions: {
         distributeSeries: true
       },
@@ -79,13 +85,14 @@ export default {
       .then(res => {
         let data = res.data;
         for (let d in data) {
-          if (data[d].countryName == "서울") {
+          if (data[d].countryName == this.sido) {
             this.chartData.series.push(data[d].totalCase.replaceAll(",", ""));
             this.chartData.series.push(data[d].recovered.replaceAll(",", ""));
             this.chartData.series.push(data[d].death.replaceAll(",", ""));
             this.chartData.labels.push(data[d].totalCase + "명");
             this.chartData.labels.push(data[d].recovered + "명");
             this.chartData.labels.push(data[d].death + "명");
+            break;
           }
         }
         this.updateChartId();

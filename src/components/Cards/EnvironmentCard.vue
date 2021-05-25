@@ -35,11 +35,17 @@ export default {
   components: {
     Card
   },
+  props: {
+    gugun: {
+      type: String,
+      default: "강남구"
+    }
+  },
   data() {
     return {
       chartId: "EnvChart",
       footerText: "test",
-      title: "환경 정보",
+      title: this.gugun + " 환경 정보",
       subTitle: "실시간 대기 환경 현황 ",
       chartData: {
         labels: [
@@ -111,7 +117,7 @@ export default {
           this.chartData.series[1][5] += parseInt(
             data[d].OZONE == "점검중" ? 0 : data[d].OZONE * 100
           );
-          if (data[d].MSRSTENAME == "종로구") {
+          if (data[d].MSRSTENAME == this.gugun) {
             this.chartData.series[0].push(data[d].PM10);
             this.chartData.series[0].push(data[d].PM25);
             this.chartData.series[0].push(data[d].NITROGEN * 100);
