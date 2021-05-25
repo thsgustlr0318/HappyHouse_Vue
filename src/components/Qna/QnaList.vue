@@ -1,5 +1,60 @@
 <template>
   <div>
+    <card class="card-plain">
+      <div class="table-full-width table-responsive">
+        <div
+          class="accordion"
+          role="tablist"
+          v-for="(item, index) in data"
+          :key="index"
+        >
+          <b-card no-body class="mb-1">
+            <b-card-header header-tag="header" class="p-1" role="tab">
+              <b-button
+                block
+                v-b-toggle="'test-' + item.qno"
+                variant="outline-secondary"
+              >
+                <b-row>
+                  <b-col md="1" style="color:black">{{ item.qno }}</b-col>
+                  <b-col md="2" style="color:black">{{
+                    item.chk == 1 ? "답변완료" : "답변미완료"
+                  }}</b-col>
+                  <b-col md="4" style="color:black">{{ item.subject }}</b-col>
+                  <b-col md="2" style="color:black">{{ item.userid }}</b-col>
+                  <b-col md="3" style="color:black">{{ item.time }}</b-col>
+                </b-row>
+              </b-button>
+            </b-card-header>
+            <b-collapse
+              :id="'test-' + item.qno"
+              accordion="my-accordion"
+              role="tabpanel"
+            >
+              <b-card-body>
+                <b-card-text
+                  ><qna-view
+                    :item="item"
+                    @childs-event="updateQnaList"
+                  ></qna-view
+                ></b-card-text>
+              </b-card-body>
+            </b-collapse>
+          </b-card>
+        </div>
+      </div>
+    </card>
+    <b-row>
+      <b-col md="8"></b-col>
+      <b-col md="3" v-on:click="goRegisterQnaPage()"
+        ><b-button>
+          <i class="ti-comment-alt" style="font-size:150%"> Q&A 작성</i>
+        </b-button></b-col
+      >
+    </b-row>
+  </div>
+
+  <!-- <div>
     <div class="col-12">
       <card class="card-plain">
         <div class="table-full-width table-responsive">
@@ -17,7 +72,7 @@
         </p-button>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script>
@@ -25,6 +80,7 @@
 // import ListRow from "@/components/qna/include/ListRow.vue";
 // import NotificationTemplate from "../Notifications/NotificationTemplate";
 import QnaTable from "@/components/Qna/QnaTable.vue";
+import QnaView from "@/components/Qna/QnaView.vue";
 import http from "@/util/http-common";
 
 export default {
@@ -37,7 +93,8 @@ export default {
   },
   components: {
     // ListRow
-    QnaTable
+    QnaTable,
+    QnaView
   },
   computed: {
     // ...mapGetters(["qnas"])
@@ -55,16 +112,19 @@ export default {
     }
   },
   created() {
-    http.get("/qna/all", {}).then(({ data }) => {
-      console.log("qna 받아오기");
-      // console.log(data);
-      console.log(data);
-      this.data = data;
-    });
+    this.updateQnaList();
   },
   methods: {
     goRegisterQnaPage() {
       this.$router.push({ name: "qna-register" });
+    },
+    updateQnaList() {
+      http.get("/qna/all", {}).then(({ data }) => {
+        console.log("qna 받아오기");
+        // console.log(data);
+        console.log(data);
+        this.data = data;
+      });
     }
   }
 };

@@ -1,20 +1,12 @@
 <template>
-  <card class="card" title="Q&A 작성">
+  <card class="card">
     <div>
       <form>
         <div class="row">
           <div class="col-md-12">
+            <!-- 제목 수정 -->
             <fg-input
-              v-if="!this.modify"
-              type="text"
-              label="제목"
-              placeholder="Q&A 제목을 입력하세요."
-              disabled="true"
-              v-model="item.subject"
-            >
-            </fg-input>
-            <fg-input
-              v-else
+              v-if="this.modify"
               type="text"
               label="제목"
               placeholder="Q&A 제목을 입력하세요."
@@ -23,12 +15,12 @@
             </fg-input>
           </div>
         </div>
-        <!-- 유저 아이디 로그인 시 자동 입력 -->
+        <!-- 유저 아이디 -->
         <div class="row">
           <div class="col-md-12">
             <fg-input
               type="text"
-              label="userid"
+              label="USER ID"
               placeholder="Q&A 제목을 입력하세요."
               disabled="true"
               v-model="item.userid"
@@ -43,7 +35,6 @@
               <label id="question">Q</label>
               <textarea
                 v-if="!this.modify"
-                rows="5"
                 class="form-control border-input"
                 placeholder="Q&A 내용을 입력하세요"
                 disabled="true"
@@ -52,30 +43,69 @@
               </textarea>
               <textarea
                 v-else
-                rows="5"
                 class="form-control border-input"
                 placeholder="Q&A 내용을 입력하세요"
                 v-model="item.content"
               >
               </textarea>
 
-              <!--파일-->
+              <!--Q 파일 수정 -->
+              <b-form-file
+                v-if="this.modify"
+                type="file"
+                multiple
+                @change="checkFileInfo"
+                placeholder="파일을 선택하세요"
+                drop-placeholder="Drop file here..."
+              ></b-form-file>
+              <!-- 
               <input
                 id="customFile"
                 type="file"
                 multiple
                 @change="checkFileInfo"
-              />
+              /> -->
+
+              <!-- Q 파일 출력 -->
+              <div v-if="files.length != 0">
+                <b-carousel
+                  id="carousel-1"
+                  v-model="slide"
+                  :interval="5000"
+                  controls
+                  indicators
+                  background="#ababab"
+                  img-width="1024"
+                  img-height="480"
+                  style="text-shadow: 1px 1px 2px #333;"
+                  @sliding-start="onSlideStart"
+                  @sliding-end="onSlideEnd"
+                >
+                  <div v-for="(file, index) in files" :key="index">
+                    <b-carousel-slide
+                      :img-src="
+                        require('../../assets/files/qnafiles/' + file.filename)
+                      "
+                    >
+                      <b-button
+                        v-on:click="deleteFile(file.fileno)"
+                        v-if="modify"
+                      >
+                        파일 삭제
+                      </b-button>
+                    </b-carousel-slide>
+                  </div>
+                </b-carousel>
+              </div>
 
               <!-- 파일 출력 -->
-              <div v-for="(file, index) in files" :key="index">
+              <!-- <div v-for="(file, index) in files" :key="index">
                 <textarea
                   rows="1"
                   class="form-control border-input"
                   v-model="file.originalfilename"
                 >
                 </textarea>
-                <!-- <img style="width: 120px;" :src="file.filepath" /> -->
                 <button v-on:click="deleteFile(file.fileno)">
                   파일 삭제
                 </button>
@@ -83,12 +113,12 @@
                   :src="require('../../assets/files/qnafiles/' + file.filename)"
                   width="50%"
                 />
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
 
-        <!-- 답변 출력 -->
+        <!-- A 답변 출력 -->
         <div v-if="this.item.chk == 1 || printAnswerList" class="row">
           <div class="col-md-12">
             <div class="form-group">
@@ -110,21 +140,37 @@
                 >
                 </textarea>
 
-                <button v-on:click="deleteAnswer(ans.ano)">
-                  답변 삭제
-                </button>
-                <button
-                  v-if="answerModify != ans.ano"
-                  v-on:click="modifyAnswer(ans.ano)"
-                >
-                  답변 수정
-                </button>
-                <button
-                  v-if="answerModify == ans.ano"
-                  v-on:click="modifyQnaAnswer(ans.ano, ans.content)"
-                >
-                  답변 수정 완료
-                </button>
+                <div class="text-center">
+                  <span v-on:click="deleteAnswer(ans.ano)">
+                    <p-button
+                      type="secondary"
+                      round
+                      v-if="answerModify == ans.ano"
+                    >
+                      답변 삭제
+                    </p-button>
+                  </span>
+                  <span v-on:click="modifyAnswer(ans.ano)">
+                    <p-button
+                      type="danger"
+                      round
+                      v-if="answerModify != ans.ano"
+                      style="margin-left:5px"
+                    >
+                      답변 수정
+                    </p-button>
+                  </span>
+                  <span v-on:click="modifyQnaAnswer(ans.ano, ans.content)">
+                    <p-button
+                      type="danger"
+                      round
+                      v-if="answerModify == ans.ano"
+                      style="margin-left:5px"
+                    >
+                      답변 수정 완료
+                    </p-button>
+                  </span>
+                </div>
                 <br /><br />
               </div>
             </div>
@@ -149,37 +195,30 @@
 
         <!-- 버튼 -->
         <div class="text-center">
-          <span>
-            <router-link to="/qna"
-              ><p-button round type="info">
-                <div>목록</div>
-              </p-button></router-link
-            >
-          </span>
-          <span v-if="!this.modify" v-on:click="changeMode()">
-            <p-button type="info" round>
-              수정
-            </p-button>
+          <span v-if="!this.modify && !this.regist" v-on:click="changeMode()">
+            <b-button type="info" round style="margin-left:5px">
+              질문 수정
+            </b-button>
           </span>
           <span v-if="this.modify" v-on:click="deleteQna()">
-            <p-button type="info" round>
-              삭제
-            </p-button>
+            <b-button type="info" round style="margin-left:5px">
+              질문 삭제
+            </b-button>
           </span>
           <span v-if="this.modify" v-on:click="modifyQna()">
-            <p-button type="info" round>
-              질문 입력
-            </p-button>
+            <b-button type="info" round style="margin-left:5px">
+              질문 수정 완료
+            </b-button>
           </span>
-          <span v-if="!this.regist" v-on:click="addAnswer()">
-            <p-button type="info" round>
+          <span v-if="!this.regist && !this.modify" v-on:click="addAnswer()">
+            <b-button type="info" round style="margin-left:5px">
               답변 입력
-            </p-button>
+            </b-button>
           </span>
           <span v-if="this.regist" v-on:click="addQnaAnswer()">
-            <p-button type="info" round>
+            <b-button type="info" round style="margin-left:5px">
               답변 입력 완료
-            </p-button>
+            </b-button>
           </span>
         </div>
         <div class="clearfix"></div>
@@ -198,12 +237,13 @@ export default {
       regist: false,
       answerModify: -1,
       printAnswerList: false,
-      files: []
+      files: [],
+      modify: false
     };
   },
   props: {
-    item: {},
-    modify: true
+    item: {}
+    // modify: true
   },
   created() {
     console.log("created");
@@ -216,7 +256,6 @@ export default {
         // alert(msg);
       });
     }
-    console.log("created");
     this.getFileList();
   },
   methods: {
@@ -255,7 +294,8 @@ export default {
             msg = "삭제가 완료되었습니다.";
           }
           alert(msg);
-          this.$router.push("/qna");
+          // this.$router.push("/qna");
+          this.$emit("childs-event");
         });
       }
     },
