@@ -17,12 +17,8 @@
     "chartist": "^0.11.0",
     "es6-promise": "^4.2.4",
     "next-redux-wrapper": "^6.0.2",
-<<<<<<< HEAD
-    "vue": "^2.6.10",
     "vue-chartist": "^2.3.1",
-=======
     "vue": "^2.6.12",
->>>>>>> 020065b6a24209b67bc2800cc4200018e6b265c8
     "vue-clickaway": "^2.1.0",
     "vue-notifyjs": "^0.3.0",
     "vue-router": "^3.0.1",
