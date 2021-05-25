@@ -14,13 +14,6 @@
     </template>
     <div>
       <div :id="chartId" class="ct-chart"></div>
-      <chartist
-        ratio="ct-major-second"
-        type="Line"
-        :data="chartData"
-        :options="chartOptions"
-      >
-      </chartist>
       <div class="footer">
         <div class="chart-legend">
           <slot name="legend"></slot>
@@ -42,42 +35,20 @@ export default {
   components: {
     Card
   },
-  props: {
-    footerText: {
-      type: String,
-      default: ""
-    },
-    title: {
-      type: String,
-      default: ""
-    },
-    subTitle: {
-      type: String,
-      default: ""
-    },
-    chartType: {
-      type: String,
-      default: "Line" // Line | Pie | Bar
-    },
-    chartOptions: {
-      type: Object,
-      default: () => {
-        return {};
-      }
-    },
-    chartData: {
-      type: Object,
-      default: () => {
-        return {
-          labels: [],
-          series: []
-        };
-      }
-    }
-  },
   data() {
     return {
-      chartId: "no-id"
+      chartId: "line",
+      footerText: "test",
+      title: "코로나 확진 환자 수",
+      subTitle: "우리 시 확진 환자를 확인하세요",
+      chartOptions: {
+        distributeSeries: true
+      },
+      chartData: {
+        labels: [],
+        series: []
+      },
+      chartType: "Bar"
     };
   },
   methods: {
@@ -101,14 +72,6 @@ export default {
     }
   },
   mounted() {
-    this.updateChartId();
-    import("chartist").then(Chartist => {
-      let ChartistLib = Chartist.default || Chartist;
-      this.$nextTick(() => {
-        this.initChart(ChartistLib);
-      });
-    });
-
     http
       .get("https://api.corona-19.kr/korea/country/new/", {
         params: { serviceKey: "XTNfSm3LJEBhprI4ycwbM9Qx2qkW8C6Hz" }
@@ -120,56 +83,29 @@ export default {
         for (let d in data) {
           console.log("why " + data[d]);
           if (data[d].countryName == "서울") {
+            this.chartData.series.push(data[d].totalCase.replaceAll(",", ""));
+            this.chartData.series.push(data[d].recovered.replaceAll(",", ""));
+            this.chartData.series.push(data[d].death.replaceAll(",", ""));
+            this.chartData.labels.push(data[d].totalCase + "명");
+            this.chartData.labels.push(data[d].recovered + "명");
+            this.chartData.labels.push(data[d].death + "명");
             console.log(data[d].totalCase.replaceAll(",", ""));
             console.log(data[d].recovered.replaceAll(",", ""));
             console.log(data[d].death.replaceAll(",", ""));
           }
         }
+        console.log("sfsdfs" + this.chartData.labels[0]);
+        this.updateChartId();
+        import("chartist").then(Chartist => {
+          let ChartistLib = Chartist.default || Chartist;
+          this.$nextTick(() => {
+            this.initChart(ChartistLib);
+          });
+        });
       })
       .catch(e => {
         console.log();
       });
-
-    var data = {
-      labels: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec"
-      ],
-      series: [
-        [5, 4, 3, 7, 5, 10, 3, 4, 8, 10, 6, 8],
-        [3, 2, 9, 5, 4, 6, 4, 6, 7, 8, 7, 4]
-      ]
-    };
-
-    var options = {
-      seriesBarDistance: 10
-    };
-
-    var responsiveOptions = [
-      [
-        "screen and (max-width: 640px)",
-        {
-          seriesBarDistance: 5,
-          axisX: {
-            labelInterpolationFnc: function(value) {
-              return value[0];
-            }
-          }
-        }
-      ]
-    ];
-
-    new Chartist.Bar("#barChart", data, options, responsiveOptions);
   }
 };
 </script>

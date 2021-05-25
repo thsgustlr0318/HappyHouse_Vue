@@ -14,15 +14,13 @@
           title="Email Statistics"
           sub-title="Last campaign performance"
           :chart-data="preferencesChart.data"
-          chart-type="Pie"
+          chart-type="Bar"
         >
-          <span slot="footer">
-            <i class="ti-timer"></i> Campaign set 2 days ago</span
-          >
+          <span slot="footer"> <i class="ti-timer"></i> Update 1 day ago</span>
           <div slot="legend">
-            <i class="fa fa-circle text-info"></i> Open
-            <i class="fa fa-circle text-danger"></i> Bounce
-            <i class="fa fa-circle text-warning"></i> Unsubscribe
+            <i class="fa fa-circle text-info"></i> 확진환자수
+            <i class="fa fa-circle text-warning"></i> 완치자수
+            <i class="fa fa-circle text-danger"></i> 사망자수
           </div>
         </corona-card>
       </div>
