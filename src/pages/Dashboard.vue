@@ -97,6 +97,11 @@
           </div>
         </chart-card>
       </div>
+      <!--공지사항-->
+      <div class="col-md-6 col-12">
+        <notice-card title="공지사항" sub-title="공지사항을 확인해주세요!">
+        </notice-card>
+      </div>
     </div>
   </div>
 </template>
@@ -107,13 +112,15 @@ import Chartist from "chartist";
 import Maps from "@/pages/Maps.vue";
 import AptCard from "@/pages/Apt/AptCard.vue";
 import NewsCard from "@/components/Cards/NewsCard.vue";
+import NoticeCard from "@/components/Cards/NoticeCard.vue";
 export default {
   components: {
     StatsCard,
     ChartCard,
     Maps,
     NewsCard,
-    AptCard
+    AptCard,
+    NoticeCard
   },
   computed: {
     ...mapState(["apts"])

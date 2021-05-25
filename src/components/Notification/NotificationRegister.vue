@@ -86,6 +86,7 @@ export default {
           if (data === "success") {
             msg = "등록이 완료되었습니다.";
           }
+          alert(msg);
           this.registerNoticeFile();
         });
     },
@@ -100,25 +101,29 @@ export default {
     async checkFileInfo(no) {
       console.log(no);
       console.log(this.$refs.fileitem.files);
-      const formData = new FormData();
-      this.fileInfos = this.$refs.fileitem.files;
-      // console.log(this.fileInfos);
-      for (var index = 0; index < this.fileInfos.length; index++) {
-        formData.append("files", this.fileInfos[index]);
+      if (this.$refs.fileitem.files.length == 0) {
+        console.log("파일없어요");
+      } else {
+        const formData = new FormData();
+        this.fileInfos = this.$refs.fileitem.files;
+        // console.log(this.fileInfos);
+        for (var index = 0; index < this.fileInfos.length; index++) {
+          formData.append("files", this.fileInfos[index]);
+        }
+        // console.log(this.fileInfos);
+        http
+          .post("file/upload/" + no, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
+          })
+          .then(({ data }) => {
+            console.log("파일 올리기");
+            console.log(data);
+            // this.getFileList();
+            this.moveNoticeList();
+          });
       }
-      // console.log(this.fileInfos);
-      http
-        .post("file/upload/" + no, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        })
-        .then(({ data }) => {
-          console.log("파일 올리기");
-          console.log(data);
-          // this.getFileList();
-          this.moveNoticeList();
-        });
     },
     moveNoticeList() {
       this.$router.push("/notifications");
