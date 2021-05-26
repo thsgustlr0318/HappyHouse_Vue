@@ -16,24 +16,17 @@
           </div>
         </div>
         <!-- 유저 아이디 -->
-        <div class="row">
-          <div class="col-md-12">
-            <fg-input
-              type="text"
-              label="USER ID"
-              placeholder="Q&A 제목을 입력하세요."
-              disabled="true"
-              v-model="item.userid"
-            >
-            </fg-input>
-          </div>
-        </div>
 
         <div class="row">
           <div class="col-md-12">
             <div class="form-group">
-              <label id="question">Q</label>
+              <div class="col-md-3">
+                <p-button round simple block style="text-align:left">
+                  ? {{ item.userid }} 님의 질문</p-button
+                >
+              </div>
               <textarea
+                style="background-color:transparent"
                 v-if="!this.modify"
                 class="form-control border-input"
                 placeholder="Q&A 내용을 입력하세요"
@@ -42,6 +35,7 @@
               >
               </textarea>
               <textarea
+                style="background-color:transparent"
                 v-else
                 class="form-control border-input"
                 placeholder="Q&A 내용을 입력하세요"
@@ -122,9 +116,19 @@
         <div v-if="this.item.chk == 1 || printAnswerList" class="row">
           <div class="col-md-12">
             <div class="form-group">
-              <label id="answer">A</label>
+              <div class="col-md-3">
+                <p-button
+                  round
+                  simple
+                  block
+                  style="text-align:left; color:#EB5E28"
+                >
+                  > 답변</p-button
+                >
+              </div>
               <div v-for="(ans, index) in answerItem" :key="index">
                 <textarea
+                  style="background-color:transparent"
                   v-if="answerModify == ans.ano"
                   rows="5"
                   class="form-control border-input"
@@ -132,6 +136,7 @@
                 >
                 </textarea>
                 <textarea
+                  style="background-color:transparent"
                   v-if="answerModify != ans.ano"
                   rows="5"
                   class="form-control border-input"
@@ -140,14 +145,14 @@
                 >
                 </textarea>
 
-                <div class="text-center">
+                <div class="text-right">
                   <span v-on:click="deleteAnswer(ans.ano)">
                     <p-button
                       type="secondary"
                       round
                       v-if="answerModify == ans.ano"
                     >
-                      답변 삭제
+                      DELETE
                     </p-button>
                   </span>
                   <span v-on:click="modifyAnswer(ans.ano)">
@@ -155,9 +160,9 @@
                       type="danger"
                       round
                       v-if="answerModify != ans.ano"
-                      style="margin-left:5px"
+                      style="margin:10px"
                     >
-                      답변 수정
+                      ANSWER MODIFY
                     </p-button>
                   </span>
                   <span v-on:click="modifyQnaAnswer(ans.ano, ans.content)">
@@ -165,9 +170,9 @@
                       type="danger"
                       round
                       v-if="answerModify == ans.ano"
-                      style="margin-left:5px"
+                      style="margin:10px"
                     >
-                      답변 수정 완료
+                      COMPLETE
                     </p-button>
                   </span>
                 </div>
@@ -181,7 +186,16 @@
         <div v-if="this.regist" class="row">
           <div class="col-md-12">
             <div class="form-group">
-              <label id="answer">답변 입력하세요</label>
+              <div class="col-md-3">
+                <p-button
+                  round
+                  simple
+                  block
+                  style="text-align:left; color:#EB5E28"
+                >
+                  > 답변을 입력하세요</p-button
+                >
+              </div>
               <textarea
                 rows="5"
                 class="form-control border-input"
@@ -196,29 +210,30 @@
         <!-- 버튼 -->
         <div class="text-center">
           <span v-if="!this.modify && !this.regist" v-on:click="changeMode()">
-            <b-button type="info" round style="margin-left:5px">
-              질문 수정
-            </b-button>
+            <p-button type="secondary" round>
+              QUESTION MODIFY
+            </p-button>
+          </span>
+
+          <span v-if="this.modify" v-on:click="modifyQna()">
+            <p-button type="secondary" round style="margin-left: 10px;">
+              COMPLETE
+            </p-button>
           </span>
           <span v-if="this.modify" v-on:click="deleteQna()">
-            <b-button type="info" round style="margin-left:5px">
-              질문 삭제
-            </b-button>
-          </span>
-          <span v-if="this.modify" v-on:click="modifyQna()">
-            <b-button type="info" round style="margin-left:5px">
-              질문 수정 완료
-            </b-button>
+            <p-button type="danger" round style="margin-left: 10px;">
+              DELETE
+            </p-button>
           </span>
           <span v-if="!this.regist && !this.modify" v-on:click="addAnswer()">
-            <b-button type="info" round style="margin-left:5px">
-              답변 입력
-            </b-button>
+            <p-button type="danger" round style="margin-left: 10px;">
+              WRITE ANSWER
+            </p-button>
           </span>
           <span v-if="this.regist" v-on:click="addQnaAnswer()">
-            <b-button type="info" round style="margin-left:5px">
-              답변 입력 완료
-            </b-button>
+            <p-button type="danger" round>
+              COMPLETE
+            </p-button>
           </span>
         </div>
         <div class="clearfix"></div>

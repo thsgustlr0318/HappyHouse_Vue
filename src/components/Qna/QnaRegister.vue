@@ -1,5 +1,5 @@
 <template>
-  <card class="card" title="Q&A 작성">
+  <card class="card">
     <div>
       <form>
         <div class="row">
@@ -51,9 +51,9 @@
         ></b-form-file>
         <div class="text-center" v-on:click="registerQna()">
           <br />
-          <b-button round type="info">
-            입력
-          </b-button>
+          <p-button type="secondary" round>
+            COMPLETE
+          </p-button>
         </div>
         <div class="clearfix"></div>
       </form>

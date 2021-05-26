@@ -44,14 +44,11 @@
         </div>
       </div>
     </card>
-    <b-row>
-      <b-col md="8"></b-col>
-      <b-col md="3" v-on:click="goRegisterQnaPage()"
-        ><b-button>
-          <i class="ti-comment-alt" style="font-size:150%"> Q&A 작성</i>
-        </b-button></b-col
-      >
-    </b-row>
+    <div class="col-sm-11 text-right" style="margin-bottom:20px">
+      <b-button v-on:click="goRegisterQnaPage()" round>
+        <i class="ti-comment-alt"> WRITE</i>
+      </b-button>
+    </div>
   </div>
 
   <!-- <div>
