@@ -119,7 +119,7 @@ export default {
       http.get("/qna/all", {}).then(({ data }) => {
         console.log("qna 받아오기");
         // console.log(data);
-        console.log(data);
+        // console.log(data);
         this.data = data;
       });
     }

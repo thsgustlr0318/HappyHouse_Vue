@@ -244,6 +244,7 @@
 
 <script>
 import http from "@/util/http-common";
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -253,8 +254,13 @@ export default {
       answerModify: -1,
       printAnswerList: false,
       files: [],
-      modify: false
+      modify: false,
+      slide: 0,
+      sliding: null
     };
+  },
+  computed: {
+    ...mapState(["userinfo"])
   },
   props: {
     item: {}
@@ -262,6 +268,7 @@ export default {
   },
   created() {
     console.log("created");
+    console.log(this.item);
     this.getFileList();
     if (this.item.chk == 1) {
       http.get("qna/answer/" + `${this.item.qno}`).then(({ data }) => {
@@ -274,6 +281,12 @@ export default {
     this.getFileList();
   },
   methods: {
+    onSlideStart(slide) {
+      this.sliding = true;
+    },
+    onSlideEnd(slide) {
+      this.sliding = false;
+    },
     updateAnswerList() {
       http.get("qna/answer/" + `${this.item.qno}`).then(({ data }) => {
         console.log(data);
@@ -335,6 +348,7 @@ export default {
           this.answerContent = "";
           this.printAnswerList = true;
           this.updateAnswerList();
+          this.$emit("childs-event");
           // this.$router.push({ name: "qna-view", params: { item: this.item } });
         });
     },
@@ -392,10 +406,10 @@ export default {
     },
     getFileList() {
       http.get("qnafile/getFileList/" + `${this.item.qno}`).then(({ data }) => {
-        console.log("44");
+        // console.log("44");
         this.files = data;
         // this.downloadFile(data.fileno);
-        console.log(data);
+        // console.log(data);
       });
     },
     async deleteFile(fileno) {
