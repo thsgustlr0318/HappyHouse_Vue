@@ -81,7 +81,7 @@
         <card class="card-map" title="주변 상권 정보">
           <div class="map">
             <div id="map">
-              <ul id="category">
+              <ul id="category" style="padding-inline-start: 0px;">
                 <li
                   id="BK9"
                   data-order="0"

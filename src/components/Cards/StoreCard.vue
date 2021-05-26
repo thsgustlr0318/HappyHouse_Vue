@@ -2,7 +2,7 @@
   <card class="card-map" title="주변 상권 정보">
     <div class="map">
       <div id="map">
-        <ul id="category">
+        <ul id="category" style="padding-inline-start: 0px;">
           <li id="BK9" data-order="0" v-on:click="onClickCategory($event)">
             <span class="category_bg bank"></span>
             은행
@@ -30,6 +30,7 @@
         </ul>
       </div>
     </div>
+    <input v-model="this.address" style="display:none" />
   </card>
 </template>
 <script>
@@ -39,7 +40,7 @@ export default {
   props: {
     address: {
       type: String,
-      default: "서울 강남구 역삼동"
+      default: "주소 받아오는중"
     }
   },
   data() {
@@ -52,7 +53,7 @@ export default {
       contentNode: ""
     };
   },
-  mounted() {
+  updated() {
     if (window.kakao && window.kakao.maps) {
       this.initMap();
     } else {
