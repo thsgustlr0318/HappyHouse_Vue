@@ -48,40 +48,32 @@
           </select>
         </div>
       </div>
-      <b-row>
-        <b-form-checkbox
-          id="coronaHospitalSelected"
-          v-model="coronaHospitalSelected"
-          value="accepted"
-          unchecked-value="not_accepted"
-        >
-          코로나 선별 진료소
-        </b-form-checkbox>
-      </b-row>
     </div>
     <!-- <div class="map">
       <div id="map"></div>
     </div> -->
+    <hr />
     <div class="map_wrap">
       <div
         id="map"
         style="width:100%;height:100%;position:relative;overflow:hidden;"
       ></div>
       <div id="menu_wrap" class="bg_white">
-        <div class="option">
-          <!-- <div>
-            <form onsubmit="searchPlaces(); return false;">
-              키워드 :
-              <input type="text" value="이태원 맛집" id="keyword" size="15" />
-              <button type="submit">검색하기</button>
-            </form>
-          </div> -->
-        </div>
+        <div class="option"></div>
         <hr />
         <ul id="placesList"></ul>
         <div id="pagination"></div>
       </div>
     </div>
+    <hr />
+    <b-form-checkbox
+      id="coronaHospitalSelected"
+      v-model="coronaHospitalSelected"
+      value="accepted"
+      unchecked-value="not_accepted"
+    >
+      코로나 선별 진료소
+    </b-form-checkbox>
   </card>
 </template>
 <script>
@@ -127,10 +119,8 @@ export default {
   },
   created() {
     http.get("/map/sido", {}).then(({ data }) => {
-      console.log("sido 받아오기");
       // console.log(data);
       this.sidos = data;
-      console.log(this.sidos);
     });
   },
   updated() {
@@ -143,8 +133,6 @@ export default {
   methods: {
     ...mapActions(["getAptList"]),
     getGugun() {
-      console.log("gugun 받아오기");
-      console.log(this.sido);
       http
         .get("/map/gugun", { params: { sido: this.sido } })
         .then(({ data }) => {
@@ -153,20 +141,16 @@ export default {
         });
     },
     getDong() {
-      console.log("dong 받아오기");
-      console.log(this.gugun);
       http
         .get("/map/dong", { params: { gugun: this.gugun } })
         .then(({ data }) => {
           this.dongs = data;
-          console.log(this.dongs);
         });
     },
     async sendKeyword() {
       // this.$emit('send-keyword', this.dongCode);
       let map = this.map;
       this.dongCode = this.gugun;
-      console.log("아파트 정보 얻기");
       await this.getAptList(this.dongCode);
       //this.$store.dispatch("getAptList", this.dongCode);
       this.dongCode = "";
@@ -175,12 +159,10 @@ export default {
 
       for (let key in geoList) {
         //console.log(this.dongs);
-        console.log(geoList[key]);
         // 주소로 좌표를 검색합니다
         let address =
           geoList[key].도로명 + " " + geoList[key].도로명건물본번호코드 + "";
         //test = test.replaceAll("\(.*\)|\s-\s.*", "");
-        console.log(address);
         geocoder.addressSearch(address, function(result, status) {
           // 정상적으로 검색이 완료됐으면
           if (status === kakao.maps.services.Status.OK) {
@@ -262,14 +244,13 @@ export default {
       if (status === kakao.maps.services.Status.OK) {
         // 정상적으로 검색이 완료됐으면
         // 검색 목록과 마커를 표출합니다
-        console.log("코로나 선별 진료소");
-        console.log(data);
+
         this.displayPlaces(data);
 
         // // 페이지 번호를 표출합니다
         // this.displayPagination(pagination);
       } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-        alert("검색 결과가 존재하지 않습니다.");
+        console.log("검색 결과가 존재하지 않습니다.");
         return;
       }
     },
@@ -370,7 +351,7 @@ export default {
 
     // 마커를 생성하고 지도 위에 마커를 표시하는 함수입니다
     addMarker(position, idx, title) {
-      var imageSrc = require("@/assets/img/hospital-icon.png"), // 마커 이미지 url, 스프라이트 이미지를 씁니다
+      var imageSrc = require("@/assets/img/hospital_marker2.png"), // 마커 이미지 url, 스프라이트 이미지를 씁니다
         imageSize = new kakao.maps.Size(30, 30), // 마커 이미지의 크기
         imgOptions = {
           // spriteSize: new kakao.maps.Size(36, 691), // 스프라이트 이미지의 크기
