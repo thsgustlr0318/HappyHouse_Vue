@@ -9,7 +9,8 @@ export default new Vuex.Store({
     apts: [],
     apt: Object,
     address: Object,
-    userinfo: Object
+    userinfo: Object,
+    addressCode: ""
   },
   getters: {
     apts(state) {
@@ -26,6 +27,9 @@ export default new Vuex.Store({
     },
     SELECT_APT(state, payload) {
       state.apt = payload;
+    },
+    SELECT_ADDR(state, payload) {
+      state.addressCode = payload;
     },
     GET_USER_INFO(state, payload) {
       // console.log(state, apts);
@@ -65,6 +69,9 @@ export default new Vuex.Store({
     },
     selectApt({ commit }, apt) {
       commit("SELECT_APT", apt);
+    },
+    selectAddress({ commit }, addressCode) {
+      commit("SELECT_ADDR", addressCode);
     },
     login({ commit }, info) {
       localStorage.setItem("userinfo", JSON.stringify(info));

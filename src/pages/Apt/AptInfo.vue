@@ -136,12 +136,36 @@
         </card>
       </div>
     </div>
+    <div class="row">
+      <div class="col-md-6 col-12">
+        <corona-card :sido="sido">
+          <span slot="footer"> <i class="ti-timer"></i> Update 1 day ago</span>
+          <div slot="legend">
+            <i class="fa fa-circle text-info"></i> 확진환자수
+            <i class="fa fa-circle text-warning"></i> 완치자수
+            <i class="fa fa-circle text-danger"></i> 사망자수
+          </div>
+        </corona-card>
+      </div>
+
+      <div class="col-md-6 col-12">
+        <environment-card :gugun="gugun">
+          <span slot="footer"> <i class="ti-check"></i> 단위:㎍/㎥ </span>
+          <div slot="legend">
+            <i class="fa fa-circle text-info"></i> 우리 동네
+            <i class="fa fa-circle text-warning"></i> 서울시 평균
+          </div>
+        </environment-card>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
 import { PaperTable } from "@/components";
+import EnvironmentCard from "@/components/Cards/EnvironmentCard.vue";
+import CoronaCard from "@/components/Cards/CoronaCard.vue";
 export default {
   name: "AptInfo",
   data() {
@@ -151,16 +175,23 @@ export default {
       ps: "",
       currCategory: "",
       placeOverlay: "",
-      contentNode: ""
+      contentNode: "",
+      sido: "서울",
+      gugun: "강남구"
     };
   },
   components: {
-    PaperTable
+    PaperTable,
+    CoronaCard,
+    EnvironmentCard
   },
   computed: {
-    ...mapState(["apt"])
+    ...mapState(["apt", "addressCode"])
   },
   mounted() {
+    console.log("주소 코드 " + this.addressCode);
+    this.sido = this.addressCode.split(" ")[0].substr(0, 2);
+    this.gugun = this.addressCode.split(" ")[1];
     if (window.kakao && window.kakao.maps) {
       this.initMap();
     } else {
