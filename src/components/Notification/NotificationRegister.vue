@@ -20,7 +20,8 @@
               type="text"
               label="userid"
               placeholder="아이디 입력하세요."
-              v-model="userid"
+              disabled="true"
+              v-model="this.userinfo.userid"
             >
             </fg-input>
           </div>
@@ -63,6 +64,7 @@
 
 <script>
 import http from "@/util/http-common";
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -73,11 +75,14 @@ export default {
       fileInfos: []
     };
   },
+  computed: {
+    ...mapState(["userinfo"])
+  },
   methods: {
     registerNotification() {
       http
         .post("notice/add", {
-          userid: this.userid,
+          userid: this.userinfo.userid,
           subject: this.subject,
           content: this.content
         })
@@ -91,10 +96,11 @@ export default {
         });
     },
     async registerNoticeFile() {
-      http.get("notice/getNoticeNo").then(newNo => {
+      await http.get("notice/getNoticeNo").then(newNo => {
         console.log("dada");
         console.log(newNo);
         console.log(newNo.data.no);
+        // alert(newNo.data.no);
         this.checkFileInfo(newNo.data.no);
       });
     },
@@ -103,6 +109,7 @@ export default {
       console.log(this.$refs.fileitem.files);
       if (this.$refs.fileitem.files.length == 0) {
         console.log("파일없어요");
+        this.moveNoticeList();
       } else {
         const formData = new FormData();
         this.fileInfos = this.$refs.fileitem.files;

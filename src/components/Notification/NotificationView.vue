@@ -71,7 +71,10 @@
           </div>
         </div>
         <div class="text-center">
-          <span v-if="!this.modify" v-on:click="changeMode()">
+          <span
+            v-if="!this.modify && this.userinfo.userid == item.userid"
+            v-on:click="changeMode()"
+          >
             <p-button type="secondary" round>
               MODIFY
             </p-button>
@@ -94,7 +97,9 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import http from "@/util/http-common";
+
 const tableColumns = ["no", "제목", "글쓴이", "조회수"];
 export default {
   data() {
@@ -105,6 +110,9 @@ export default {
       slide: 0,
       sliding: null
     };
+  },
+  computed: {
+    ...mapState(["userinfo"])
   },
   props: {
     item: {}
