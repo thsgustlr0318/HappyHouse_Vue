@@ -74,7 +74,7 @@ export default {
       })
       .then(res => {
         console.log("chk " + res.data.user.user.userid);
-        this.address = res.data.user.user.address;
+        this.address = res.data.user.user.address.replace(/\([^\]]*\)/g, "");
         this.sido = this.address.split(" ")[0];
         this.gugun = this.address.split(" ")[1];
         console.log("get info" + res.data.user.user.address);

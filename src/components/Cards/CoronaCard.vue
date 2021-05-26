@@ -46,7 +46,7 @@ export default {
       chartId: "Bar",
       footerText: "test",
       title: "코로나 확진 환자 수",
-      subTitle: this.sido + "시 확진 환자를 확인하세요",
+      subTitle: "시 확진 환자를 확인하세요",
       chartOptions: {
         distributeSeries: true
       },
@@ -95,6 +95,7 @@ export default {
             break;
           }
         }
+        this.subTitle = this.sido + this.subTitle;
         this.updateChartId();
         import("chartist").then(Chartist => {
           let ChartistLib = Chartist.default || Chartist;

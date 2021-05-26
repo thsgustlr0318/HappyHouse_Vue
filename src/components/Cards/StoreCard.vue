@@ -52,9 +52,6 @@ export default {
       contentNode: ""
     };
   },
-  computed: {
-    ...mapState(["apt"])
-  },
   mounted() {
     if (window.kakao && window.kakao.maps) {
       this.initMap();
@@ -97,16 +94,18 @@ export default {
       this.markers = []; // 마커를 담을 배열입니다
       this.currCategory = ""; // 현재 선택된 카테고리를 가지고 있을 변수입니다
 
-      let address = this.address.replace(/\([^\]]*\)/g, "");
+      let address = this.address;
+      console.log("주소 받아옴 " + this.address);
       //test = test.replaceAll("\(.*\)|\s-\s.*", "");
       let mapContainer = document.getElementById("map"); // 지도를 표시할 div
       var geocoder = new kakao.maps.services.Geocoder();
       let coords = new kakao.maps.LatLng(37.566826, 126.9786567);
       let map = this.map;
       geocoder.addressSearch(
-        address,
+        this.address,
         async function(result, status) {
           // 정상적으로 검색이 완료됐으면
+          console.log("주소 검색 " + this.address);
           if (status === kakao.maps.services.Status.OK) {
             coords = await new kakao.maps.LatLng(result[0].y, result[0].x);
             let mapOption = {

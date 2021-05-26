@@ -45,7 +45,7 @@ export default {
     return {
       chartId: "EnvChart",
       footerText: "test",
-      title: this.gugun + " 환경 정보",
+      title: "환경 정보",
       subTitle: "실시간 대기 환경 현황 ",
       chartData: {
         labels: [
@@ -130,9 +130,9 @@ export default {
         for (let i = 0; i < 6; i++) {
           this.chartData.series[1][i] /= 25;
         }
+        this.title = this.gugun + " " + this.title;
         this.updateChartId();
         import("chartist").then(Chartist => {
-          console.log(this.chartData);
           let ChartistLib = Chartist.default || Chartist;
           this.$nextTick(() => {
             this.initChart(ChartistLib);
