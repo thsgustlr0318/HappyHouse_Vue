@@ -20,7 +20,8 @@
               type="text"
               label="userid"
               placeholder="아이디 입력하세요."
-              v-model="userid"
+              disabled="true"
+              v-model="this.userinfo.userid"
             >
             </fg-input>
           </div>
@@ -63,6 +64,7 @@
 
 <script>
 import http from "@/util/http-common";
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -71,11 +73,14 @@ export default {
       content: ""
     };
   },
+  computed: {
+    ...mapState(["userinfo"])
+  },
   methods: {
     registerQna() {
       http
         .post("qna/add", {
-          userid: this.userid,
+          userid: this.userinfo.userid,
           subject: this.subject,
           content: this.content
         })
@@ -90,7 +95,7 @@ export default {
     },
 
     async RegisterQnaFile() {
-      http.get("qna/getQnaNo").then(res => {
+      await http.get("qna/getQnaNo").then(res => {
         console.log("dada");
         console.log(res.data);
         console.log(res.data.qno);
@@ -100,25 +105,30 @@ export default {
     async checkFileInfo(qno) {
       console.log(qno);
       console.log(this.$refs.fileitem.files);
-      const formData = new FormData();
-      this.fileInfos = this.$refs.fileitem.files;
-      // console.log(this.fileInfos);
-      for (var index = 0; index < this.fileInfos.length; index++) {
-        formData.append("files", this.fileInfos[index]);
+      if (this.$refs.fileitem.files.length == 0) {
+        console.log("파일없어요");
+        this.moveQnaList();
+      } else {
+        const formData = new FormData();
+        this.fileInfos = this.$refs.fileitem.files;
+        // console.log(this.fileInfos);
+        for (var index = 0; index < this.fileInfos.length; index++) {
+          formData.append("files", this.fileInfos[index]);
+        }
+        // console.log(this.fileInfos);
+        http
+          .post("qnafile/upload/" + qno, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
+          })
+          .then(({ data }) => {
+            console.log("파일 올리기");
+            console.log(data);
+            // this.getFileList();
+            this.moveQnaList();
+          });
       }
-      // console.log(this.fileInfos);
-      http
-        .post("qnafile/upload/" + qno, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        })
-        .then(({ data }) => {
-          console.log("파일 올리기");
-          console.log(data);
-          // this.getFileList();
-          this.moveQnaList();
-        });
     },
     moveQnaList() {
       this.$router.push("/qna");
