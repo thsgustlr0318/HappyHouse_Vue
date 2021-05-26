@@ -1,19 +1,11 @@
 <template>
-  <card
-    class="card"
-    style="padding-bottom:0px; background-color:#b8d8d8; text-align:center;"
-  >
-    <router-link :to="{ name: 'location' }" class="box">
-      <i class="fa fa-map fa-3x" style="opacity: 0.9"></i>
-      <hr />
-      <p
-        class="box-text"
-        style="color:white; font-size: 18px;font-weight: bold;font-style: italic;"
-      >
-        우리 지역 둘러보기
-      </p>
+  <div class="card" style="background-color:#66615b">
+    <router-link :to="{ name: 'location' }">
+      <div class="card-content text-center">
+        <h5 style="color:white; margin:10px">우리 동네 둘러보기</h5>
+      </div>
     </router-link>
-  </card>
+  </div>
 </template>
 <script>
 export default {

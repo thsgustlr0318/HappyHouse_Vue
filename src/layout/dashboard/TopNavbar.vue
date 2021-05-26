@@ -21,18 +21,7 @@
               <p>{{ userinfo.userid }}</p>
             </a>
           </li>
-          <drop-down
-            class="nav-item"
-            title="5 Notifications"
-            title-classes="nav-link"
-            icon="ti-bell"
-          >
-            <a class="dropdown-item" href="#">Notification 1</a>
-            <a class="dropdown-item" href="#">Notification 2</a>
-            <a class="dropdown-item" href="#">Notification 3</a>
-            <a class="dropdown-item" href="#">Notification 4</a>
-            <a class="dropdown-item" href="#">Another notification</a>
-          </drop-down>
+
           <li class="nav-item">
             <router-link :to="{ name: 'settings' }" class="nav-link">
               <i class="ti-settings"></i>

@@ -94,6 +94,7 @@ export default {
               userid: this.user.userid,
               auth: res.data
             });
+            window.location = "/";
           } else {
             this.info.data = "아이디/비밀번호를 다시 확인해주세요.";
             this.info.color = "alert-danger";
