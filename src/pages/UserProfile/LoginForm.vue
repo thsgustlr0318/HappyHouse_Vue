@@ -89,7 +89,6 @@ export default {
           if (res.data) {
             this.info.data = "로그인 성공!";
             this.info.color = "alert-success";
-            console.log("sdfsfs3" + res.data);
             this.login({
               userid: this.user.userid,
               auth: res.data

@@ -26,7 +26,7 @@
               </td>
               <b-modal :id="String(notice.no)" hide-footer size="lg">
                 <template #modal-title>
-                  <b>제목: </b> {{ notice.subject }}
+                  <b> {{ notice.subject }} </b>
                 </template>
                 <div class="d-block text-center">
                   <h4>
@@ -47,7 +47,7 @@
                   class="mt-3"
                   block
                   @click="$bvModal.hide(String(notice.no))"
-                  >공지 닫기</b-button
+                  >CLOSE</b-button
                 >
               </b-modal>
             </slot>

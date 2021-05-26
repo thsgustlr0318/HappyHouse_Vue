@@ -146,6 +146,7 @@ export default {
           if (res.status == 200) {
             this.info.data = "회원가입 성공!";
             this.info.color = "alert-success";
+            window.location = "/login";
           } else {
             this.info.data = "회원가입 실패!";
             this.info.color = "alert-danger";

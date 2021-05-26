@@ -7,7 +7,7 @@
         <sidebar-link to="/notifications" name="Notifications" icon="ti-bell" />
         <sidebar-link to="/location" name="Location" icon="ti-map" />
         <sidebar-link to="/qna" name="Q&A" icon="ti-comments" />
-        <sidebar-link to="/stats" name="Introduce" icon="ti-info-alt" />
+        <sidebar-link to="/introduce" name="Introduce" icon="ti-info-alt" />
       </template>
       <mobile-menu>
         <li class="nav-item">
