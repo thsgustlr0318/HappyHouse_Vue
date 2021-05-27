@@ -82,9 +82,8 @@ export default new Vuex.Store({
       commit("GET_USER_INFO", null);
     },
     initSession({ commit }) {
-      if (localStorage.getItem("userinfo") != '') {
-        commit("GET_USER_INFO", JSON.parse(localStorage.getItem("userinfo")));
-      }
+
+      commit("GET_USER_INFO", JSON.parse(localStorage.getItem("userinfo")));
     }
   },
   mounted() {

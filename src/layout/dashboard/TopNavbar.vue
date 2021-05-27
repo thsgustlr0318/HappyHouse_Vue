@@ -14,7 +14,7 @@
         <span class="navbar-toggler-bar"></span>
       </button>
       <div class="collapse navbar-collapse">
-        <ul v-if="userinfo" class="navbar-nav ml-auto">
+        <ul v-if="userinfo != null" class="navbar-nav ml-auto">
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="ti-user"></i>
@@ -41,7 +41,7 @@
             </router-link>
           </li>
         </ul>
-        <ul v-if="!userinfo" class="navbar-nav ml-auto">
+        <ul v-if="userinfo == null" class="navbar-nav ml-auto">
           <li class="nav-item">
             <router-link :to="{ name: 'login' }" class="nav-link">
               <i class="ti-lock"></i>
@@ -73,6 +73,10 @@ export default {
     return {
       activeNotifications: false
     };
+  },
+  mounted() {
+    console.log("왜그래");
+    console.log(this.userinfo);
   },
   methods: {
     ...mapActions(["logout"]),
