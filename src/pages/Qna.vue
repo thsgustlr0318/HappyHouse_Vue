@@ -1,5 +1,5 @@
 <template>
-  <card title="Q&A 목록" sub-title="Q&A 페이지 입니다">
+  <card title="Q&A 목록" sub-title="궁금한 점이 있으신가요?">
     <div>
       <router-view></router-view>
     </div>
