@@ -93,7 +93,9 @@ export default {
       ps: "",
       hospitalInfoWindow: "",
       coronaHospitalSelected: "true",
-      customOverlays: []
+      moveApartList: [],
+      moveApartInfoWindow: "",
+      moveApartMarkers: []
     };
   },
   computed: {
@@ -161,7 +163,7 @@ export default {
       for (let key in geoList) {
         //console.log(this.dongs);
         // 주소로 좌표를 검색합니다
-        console.log(this.sidos);
+        // console.log(this.sidos);
         let address =
           geoList[key].도로명 + " " + geoList[key].도로명건물본번호코드 + "";
         //test = test.replaceAll("\(.*\)|\s-\s.*", "");
@@ -178,7 +180,7 @@ export default {
             marker.setZIndex(2);
             marker.setMap(map);
 
-            console.log(geoList[key]);
+            // console.log(geoList[key]);
             // 인포윈도우로 장소에 대한 설명을 표시합니다
             var printOverlay = true;
             var infowindow = new kakao.maps.CustomOverlay({
@@ -248,10 +250,48 @@ export default {
       this.lng = latlngs.getLng();
 
       //움직일 때마다 아파트 정보 얻기
-      // var geocoder = new kakao.maps.services.Geocoder();
-      // geocoder.coord2RegionCode(126.9786567, 37.566826, (result, status) => {
-      //   console.log(result);
-      // });
+      let map = this.map;
+
+      var geocoder = new kakao.maps.services.Geocoder();
+      geocoder.coord2RegionCode(this.lng, this.lat, (result, status) => {
+        // console.log(result);
+        var moveDongCode = String(result[0].code).substring(0, 5);
+        console.log(moveDongCode);
+        const SERVICE_KEY =
+          "9Xo0vlglWcOBGUDxH8PPbuKnlBwbWU6aO7%2Bk3FV4baF9GXok1yxIEF%2BIwr2%2B%2F%2F4oVLT8bekKU%2Bk9ztkJO0wsBw%3D%3D";
+
+        const SERVICE_URL =
+          "http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev";
+
+        const params = {
+          LAWD_CD: moveDongCode,
+          DEAL_YMD: "202010",
+          serviceKey: decodeURIComponent(SERVICE_KEY)
+        };
+
+        http
+          .get(SERVICE_URL, {
+            params
+          })
+          .then(response => {
+            // console.log(response.data.response.body.items.item);
+            var moveApartList = response.data.response.body.items.item;
+            // console.log(moveApartList);
+            for (var key in moveApartList) {
+              var address =
+                moveApartList[key].도로명 +
+                " " +
+                moveApartList[key].도로명건물본번호코드 +
+                "";
+              //test = test.replaceAll("\(.*\)|\s-\s.*", "");
+              // console.log(address);
+              this.setMoveAptInfo(address, moveApartList[key]);
+            }
+          })
+          .catch(error => {
+            console.dir(error);
+          });
+      });
       // 코로나 선별 진료소 정보 얻어오기
       var ps = new kakao.maps.services.Places();
       var options = {
@@ -261,6 +301,53 @@ export default {
         var keyword = "코로나선별진료소";
         ps.keywordSearch(keyword, this.placesSearchCB, options);
       }
+    },
+    setMoveAptInfo(address, aptInfo) {
+      var geocoder = new kakao.maps.services.Geocoder();
+      let map = this.map;
+      geocoder.addressSearch(address, function(result, status) {
+        // console.log(result);
+        // 정상적으로 검색이 완료됐으면
+
+        if (status === kakao.maps.services.Status.OK) {
+          var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+          // 결과값으로 받은 위치를 마커로 표시합니다
+          var marker = new kakao.maps.Marker({
+            map: map,
+            position: coords
+          });
+
+          marker.setZIndex(2);
+          marker.setMap(map);
+
+          // this.moveApartMarkers.push(marker);
+          // this.markers.push(marker); // 배열에 생성된 마커를 추가합니다
+
+          // console.log(moveApartList[key]);
+          // 인포윈도우로 장소에 대한 설명을 표시합니다
+          var aptInfowindow = new kakao.maps.CustomOverlay({
+            position: coords,
+            zIndex: 5,
+            content:
+              `<div class="customoverlay">
+                                <span class="aptInfo">
+                                  <p class = "aptName">` +
+              aptInfo.아파트 +
+              `</p>
+                                  <p class = "aptCost">` +
+              aptInfo.거래금액 +
+              `만원</p>
+                                </span>
+                            </div>`
+          });
+          // console.log(moveApartList[key].아파트);
+          // console.log(moveApartList[key].거래금액);
+
+          aptInfowindow.setMap(map);
+          // this.moveApartInfoWindow.push(infowindow);
+        }
+      });
     },
     placesSearchCB(data, status) {
       if (status === kakao.maps.services.Status.OK) {
@@ -612,7 +699,7 @@ export default {
   z-index: 4;
 }
 .customoverlay .aptCost {
-  color: rgb(0, 174, 255);
+  color: rgb(255, 0, 0);
   padding: 5px 8px;
 }
 .customoverlay:after {
