@@ -49,28 +49,19 @@
         </div>
       </div>
     </div>
-    <!-- <div class="map">
-      <div id="map"></div>
-    </div> -->
     <hr />
     <div class="map_wrap">
       <div
         id="map"
         style="width:100%;height:100%;position:relative;overflow:hidden;"
       ></div>
-      <div id="menu_wrap" class="bg_white">
-        <div class="option"></div>
-        <hr />
-        <ul id="placesList"></ul>
-        <div id="pagination"></div>
-      </div>
     </div>
     <hr />
     <b-form-checkbox
       id="coronaHospitalSelected"
       v-model="coronaHospitalSelected"
-      value="accepted"
-      unchecked-value="not_accepted"
+      value="true"
+      unchecked-value="false"
     >
       코로나 선별 진료소
     </b-form-checkbox>
@@ -99,7 +90,8 @@ export default {
       maplng: "",
       ps: "",
       hospitalInfoWindow: "",
-      coronaHospitalSelected: ""
+      coronaHospitalSelected: "true",
+      customOverlays: []
     };
   },
   computed: {
@@ -124,10 +116,11 @@ export default {
     });
   },
   updated() {
-    if (this.coronaHospitalSelected != "accepted") {
+    console.log(this.coronaHospitalSelected);
+    if (this.coronaHospitalSelected == "false") {
       this.removeMarker();
       var listEl = document.getElementById("placesList");
-      this.removeAllChildNods(listEl);
+      // this.removeAllChildNods(listEl);
     }
   },
   methods: {
@@ -173,15 +166,38 @@ export default {
               map: map,
               position: coords
             });
+            marker.setZIndex(2);
             marker.setMap(map);
-            // 인포윈도우로 장소에 대한 설명을 표시합니다
 
+            console.log(geoList[key]);
+            // 인포윈도우로 장소에 대한 설명을 표시합니다
+            var printOverlay = true;
             var infowindow = new kakao.maps.CustomOverlay({
               position: coords,
+              zIndex: 5,
               content:
-                '<span class="info-title">' + geoList[key].아파트 + "</span>"
+                // '<span class="info-title">' + geoList[key].아파트 + "</span>"
+                `<div class="customoverlay">
+                                <span class="aptInfo">
+                                  <p class = "aptName">` +
+                geoList[key].아파트 +
+                `</p>
+                                  <p class = "aptCost">` +
+                geoList[key].거래금액 +
+                `만원</p>
+                                </span>
+                            </div>`
             });
             infowindow.setMap(map);
+            // kakao.maps.event.addListener(marker, "click", function() {
+            //   printOverlay = !printOverlay;
+            //   console.log(printOverlay);
+            //   if (printOverlay) {
+            //     infowindow.setMap(map);
+            //   } else {
+            //     infowindow.setMap(null);
+            //   }
+            // });
 
             // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
             // console.log("이동");
@@ -213,29 +229,26 @@ export default {
       var marker = new kakao.maps.Marker({
         position: markerPosition
       });
-
       // 마커가 지도 위에 표시되도록 설정합니다
-      marker.setMap(this.map);
+      // marker.setMap(this.map);
     },
     moveEvent() {
-      console.log("move");
       // 지도 중심좌표를 얻어옵니다
       var latlngs = this.map.getCenter();
       this.lat = latlngs.getLat();
       this.lng = latlngs.getLng();
-      // this.message =
-      //   "변경된 지도 중심좌표는 " +
-      //   this.lat +
-      //   " 이고, 경도는 " +
-      //   this.lng +
-      //   " 입니다";
 
+      //움직일 때마다 아파트 정보 얻기
+      // var geocoder = new kakao.maps.services.Geocoder();
+      // geocoder.coord2RegionCode(126.9786567, 37.566826, (result, status) => {
+      //   console.log(result);
+      // });
+      // 코로나 선별 진료소 정보 얻어오기
       var ps = new kakao.maps.services.Places();
       var options = {
         location: new kakao.maps.LatLng(this.lat, this.lng) // 지도의 중심좌표
       };
-      // console.log(options);
-      if (this.coronaHospitalSelected == "accepted") {
+      if (this.coronaHospitalSelected == "true") {
         var keyword = "코로나선별진료소";
         ps.keywordSearch(keyword, this.placesSearchCB, options);
       }
@@ -263,24 +276,21 @@ export default {
         listStr = "";
 
       // 검색 결과 목록에 추가된 항목들을 제거합니다
-      this.removeAllChildNods(listEl);
+      // this.removeAllChildNods(listEl);
 
       // 지도에 표시되고 있는 마커를 제거합니다
       this.removeMarker();
 
       for (var i = 0; i < places.length; i++) {
+        // console.log(places[i]);
         // 마커를 생성하고 지도에 표시합니다
         var placePosition = new kakao.maps.LatLng(places[i].y, places[i].x),
-          marker = this.addMarker(placePosition, i),
+          marker = this.addMarker(placePosition, places[i]),
           itemEl = this.getListItem(i, places[i]); // 검색 결과 항목 Element를 생성합니다
 
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
         // LatLngBounds 객체에 좌표를 추가합니다
         bounds.extend(placePosition);
-
-        // 마커와 검색결과 항목에 mouseover 했을때
-        // 해당 장소에 인포윈도우에 장소명을 표시합니다
-        // mouseout 했을 때는 인포윈도우를 닫습니다
         (function(marker, title) {
           kakao.maps.event.addListener(
             marker,
@@ -297,37 +307,17 @@ export default {
               this.hospitalInfoWindow.close();
             }.bind(this)
           );
-
-          itemEl.onmouseover = function() {
-            this.displayInfowindow(marker, title);
-          }.bind(this);
-
-          itemEl.onmouseout = function() {
-            this.hospitalInfoWindow.close();
-          }.bind(this);
         }.bind(this)(marker, places[i].place_name));
 
-        fragment.appendChild(itemEl);
+        // fragment.appendChild(itemEl);
       }
-      // 검색결과 항목들을 검색결과 목록 Elemnet에 추가합니다
-      listEl.appendChild(fragment);
-      menuEl.scrollTop = 0;
-
-      // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-      // this.map.setBounds(bounds);
     },
 
     // 검색결과 항목을 Element로 반환하는 함수입니다
     getListItem(index, places) {
       var el = document.createElement("li"),
         itemStr =
-          '<span class="markerbg marker_' +
-          (index + 1) +
-          '"></span>' +
-          '<div class="info">' +
-          "   <h5>" +
-          places.place_name +
-          "</h5>";
+          '<div class="info">' + "   <h5>" + places.place_name + "</h5>";
 
       if (places.road_address_name) {
         itemStr +=
@@ -350,13 +340,13 @@ export default {
     },
 
     // 마커를 생성하고 지도 위에 마커를 표시하는 함수입니다
-    addMarker(position, idx, title) {
-      var imageSrc = require("@/assets/img/hospital_marker2.png"), // 마커 이미지 url, 스프라이트 이미지를 씁니다
-        imageSize = new kakao.maps.Size(30, 30), // 마커 이미지의 크기
+    addMarker(position, placeInfo) {
+      var imageSrc = require("@/assets/img/hospital-icon7.png"), // 마커 이미지 url, 스프라이트 이미지를 씁니다
+        imageSize = new kakao.maps.Size(40, 40), // 마커 이미지의 크기
         imgOptions = {
           // spriteSize: new kakao.maps.Size(36, 691), // 스프라이트 이미지의 크기
           // spriteOrigin: new kakao.maps.Point(0, idx * 46 + 10), // 스프라이트 이미지 중 사용할 영역의 좌상단 좌표
-          offset: new kakao.maps.Point(0, 40) // 마커 좌표에 일치시킬 이미지 내에서의 좌표
+          // offset: new kakao.maps.Point(0, 0) // 마커 좌표에 일치시킬 이미지 내에서의 좌표
         },
         markerImage = new kakao.maps.MarkerImage(
           imageSrc,
@@ -365,12 +355,16 @@ export default {
         ),
         marker = new kakao.maps.Marker({
           position: position, // 마커의 위치
-          image: markerImage
+          image: markerImage,
+          clickable: true
         });
-
+      marker.setZIndex(1);
       marker.setMap(this.map); // 지도 위에 마커를 표출합니다
       this.markers.push(marker); // 배열에 생성된 마커를 추가합니다
 
+      kakao.maps.event.addListener(marker, "click", function() {
+        window.open(placeInfo.place_url);
+      });
       return marker;
     },
 
@@ -387,12 +381,6 @@ export default {
       var paginationEl = document.getElementById("pagination"),
         fragment = document.createDocumentFragment(),
         i;
-
-      // 기존에 추가된 페이지번호를 삭제합니다
-      while (paginationEl.hasChildNodes()) {
-        paginationEl.removeChild(paginationEl.lastChild);
-      }
-
       for (i = 1; i <= pagination.last; i++) {
         var el = document.createElement("a");
         el.href = "#";
@@ -416,17 +404,13 @@ export default {
     // 검색결과 목록 또는 마커를 클릭했을 때 호출되는 함수입니다
     // 인포윈도우에 장소명을 표시합니다
     displayInfowindow(marker, title) {
-      var content = '<div style="padding:5px;z-index:1;">' + title + "</div>";
+      var content =
+        '<div style="padding:5px;z-index:1; text-align:center">' +
+        title +
+        "</div>";
       // console.log(this.hospitalInfoWindow);
       this.hospitalInfoWindow.setContent(content);
       this.hospitalInfoWindow.open(this.map, marker);
-    },
-
-    // 검색결과 목록의 자식 Element를 제거하는 함수입니다
-    removeAllChildNods(el) {
-      while (el.hasChildNodes()) {
-        el.removeChild(el.lastChild);
-      }
     }
   }
 };
@@ -593,5 +577,43 @@ export default {
   font-weight: bold;
   cursor: default;
   color: #777;
+}
+.customoverlay {
+  position: relative;
+  bottom: 75px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  border-bottom: 2px solid #ddd;
+  float: left;
+}
+.customoverlay:nth-of-type(1) {
+  border: 0;
+  box-shadow: 0px 1px 2px #888;
+}
+.customoverlay .aptInfo {
+  display: block;
+  color: #000;
+  border-radius: 5px;
+  overflow: hidden;
+  text-align: center;
+  background: #fff;
+  padding: 5px 8px;
+  font-size: 10px;
+  font-weight: bold;
+  z-index: 4;
+}
+.customoverlay .aptCost {
+  color: rgb(0, 174, 255);
+  padding: 5px 8px;
+}
+.customoverlay:after {
+  content: "";
+  position: absolute;
+  margin-left: -12px;
+  left: 50%;
+  bottom: -8px;
+  width: 22px;
+  height: 12px;
+  background: url("https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png");
 }
 </style>
