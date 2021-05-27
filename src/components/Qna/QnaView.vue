@@ -69,9 +69,7 @@
                   controls
                   indicators
                   background="#ababab"
-                  img-width="1024"
-                  img-height="480"
-                  style="text-shadow: 1px 1px 2px #333;"
+                  style="text-shadow: 1px 1px 2px #333; width:50%; margin-left: auto;margin-right: auto; margin-top:20px"
                   @sliding-start="onSlideStart"
                   @sliding-end="onSlideEnd"
                 >
