@@ -20,7 +20,9 @@
               <td v-if="index < 7" @click="$bvModal.show(String(notice.no))">
                 <b-row>
                   <b-col md="1" style="color:black">{{ notice.no }}</b-col>
-                  <b-col md="8" style="color:black">{{ notice.subject }}</b-col>
+                  <b-col md="8" style="color:black"
+                    ><b>{{ notice.subject }}</b></b-col
+                  >
                   <b-col md="3" style="color:black">{{ notice.userid }}</b-col>
                 </b-row>
               </td>
