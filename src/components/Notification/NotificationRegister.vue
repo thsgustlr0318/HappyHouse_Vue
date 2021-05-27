@@ -46,7 +46,6 @@
           type="file"
           multiple
           ref="fileitem"
-          @change="checkFileInfo"
           placeholder="파일을 선택하세요"
           drop-placeholder="Drop file here..."
         ></b-form-file>

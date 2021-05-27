@@ -32,11 +32,10 @@
                 </template>
                 <div class="d-block text-center">
                   <h4>
+                    <notice-card-image :no="notice.no"></notice-card-image>
                     <!-- {{ notice.content }} -->
                     <b-form-textarea rows="20" v-model="notice.content">
                     </b-form-textarea>
-
-                    <notice-card-image :no="notice.no"></notice-card-image>
                     <!-- <div
                       v-for="(file, index) in getFileList(notice.no)"
                       :key="index"
