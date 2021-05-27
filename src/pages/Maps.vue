@@ -6,7 +6,7 @@
           <select
             v-model="sido"
             class="col mr-1 custom-select"
-            @change="getGugun()"
+            @change="getGugun"
           >
             <option value="" disabled selected hidden>선택</option>
             <option
@@ -21,7 +21,7 @@
           <select
             v-model="gugun"
             class="col mr-1 custom-select"
-            @change="getDong()"
+            @change="getDong"
           >
             <option value="" disabled selected hidden>선택</option>
             <option
@@ -82,6 +82,8 @@ export default {
       sidos: [],
       guguns: [],
       dongs: [],
+      sidoCode: "",
+      gugunCode: "",
       dongCode: "",
       map: "",
       markers: [],
@@ -124,20 +126,26 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["getAptList"]),
-    getGugun() {
+    ...mapActions(["getAptList", "selectAddress"]),
+    getGugun(e) {
       http
         .get("/map/gugun", { params: { sido: this.sido } })
         .then(({ data }) => {
           this.guguns = data;
-          console.log(this.guguns);
+          this.sidoCode = this.sidos[
+            e.target.options.selectedIndex - 1
+          ].sidoName;
         });
     },
-    getDong() {
+    getDong(e) {
       http
         .get("/map/dong", { params: { gugun: this.gugun } })
         .then(({ data }) => {
           this.dongs = data;
+          this.gugunCode = this.guguns[
+            e.target.options.selectedIndex - 1
+          ].gugunName;
+          this.selectAddress(this.sidoCode + " " + this.gugunCode);
         });
     },
     async sendKeyword() {
@@ -153,6 +161,7 @@ export default {
       for (let key in geoList) {
         //console.log(this.dongs);
         // 주소로 좌표를 검색합니다
+        console.log(this.sidos);
         let address =
           geoList[key].도로명 + " " + geoList[key].도로명건물본번호코드 + "";
         //test = test.replaceAll("\(.*\)|\s-\s.*", "");
