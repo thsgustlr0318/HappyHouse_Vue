@@ -1,6 +1,6 @@
 # 당신에게 딱 맞는 집, HAPPYHOUSE
 
-<img src="https://user-images.githubusercontent.com/80642154/120062086-336a4b00-c09b-11eb-9d31-fa7ac5502098.png" alt="그림7" style="zoom: 50%;" />
+<img src="https://user-images.githubusercontent.com/80642154/120062086-336a4b00-c09b-11eb-9d31-fa7ac5502098.png" alt="그림7" style="zoom: 33%;" />
 
 ## 개요
 
