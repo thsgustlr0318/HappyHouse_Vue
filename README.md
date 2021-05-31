@@ -1,8 +1,10 @@
 # 당신에게 딱 맞는 집, HAPPYHOUSE
 
-<img src="https://user-images.githubusercontent.com/80642154/120062086-336a4b00-c09b-11eb-9d31-fa7ac5502098.png" alt="그림7" style="zoom: 33%;" />
+<img src="https://user-images.githubusercontent.com/80642154/120062086-336a4b00-c09b-11eb-9d31-fa7ac5502098.png" alt="그림7" style="zoom: 50%;" />
 
-## 개요
+readme 수정중..
+
+## 🏡개요
 
 **진행기간:** 2021.05.01 ~ 2021.05.28
 
@@ -10,17 +12,20 @@
 
 
 
-## 기술 스택
+## 📚기술 스택
 
 
 
-## 주요 기능
+
+
+
+## 💻주요 기능
 
 ### 지역별 아파트 정보
 
 > 원하는 지역별 아파트 정보 제공
 >
->  대기 오염 환경 정보 제공
+> 대기 오염 환경 정보 제공
 >
 > 코로나 19 확진자 수, 선별 진료소 정보 제공
 >
