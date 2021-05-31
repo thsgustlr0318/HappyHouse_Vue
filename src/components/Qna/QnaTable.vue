@@ -48,7 +48,6 @@ export default {
   },
   methods: {
     movePage(item) {
-      console.log(item);
       this.$router.push({ name: "qna-view", params: { item: item } });
     }
   }
